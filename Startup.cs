@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PlannerApi.DAL;
 using PlannerApi.Models;
 using System;
@@ -65,6 +66,16 @@ namespace PlannerApi
                 };
             });
 
+            services.AddSwaggerGen(current =>
+            {
+                current.SwaggerDoc("v0.1", new OpenApiInfo
+                {
+                    Version = "v0.1",
+                    Title = "Planner API",
+                    Description = "Planner API Documentation"
+                });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +85,14 @@ namespace PlannerApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(current =>
+            {
+                current.SwaggerEndpoint("/swagger/v0.1/swagger.json", "Planner API");
+                current.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
