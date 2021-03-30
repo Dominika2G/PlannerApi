@@ -1,64 +1,34 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlannerApi.Models;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PlannerApi.Controllers
+namespace PlannerApi.Controllers.Authentication
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class LoginController : ControllerBase
     {
         private UserManager<User> _userManager;
-        private SignInManager<User> _signInManager;
         private readonly ApplicationSettings _appSettings;
 
         #region Constructor
-        public AuthenticationController(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<ApplicationSettings> appSettings)
+        public LoginController(UserManager<User> userManager, IOptions<ApplicationSettings> appSettings)
         {
             _userManager = userManager;
-            _signInManager = signInManager;
             _appSettings = appSettings.Value;
-        }
-        #endregion
-
-        #region Register
-        [HttpPost]
-        [Route("Register")]
-        //POST: api/Authentication/Register
-        public async Task<Object> PostAuthentication(UserRegisterModel model)
-        {
-            var newUser = new User()
-            {
-                UserName = model.UserName,
-                Email = model.Email
-            };
-            try
-            {
-                var result = await _userManager.CreateAsync(newUser, model.Password);
-                return Ok(result);
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
         #endregion
 
         #region Login
         [HttpPost]
-        [Route("Login")]
-        //POST: api/Authentication/Login
+        //POST: api/Login
         public async Task<IActionResult> PostLogin(UserLoginModel model)
         {
             var currentUser = await _userManager.FindByNameAsync(model.UserName);
@@ -87,4 +57,5 @@ namespace PlannerApi.Controllers
         }
         #endregion
     }
+
 }

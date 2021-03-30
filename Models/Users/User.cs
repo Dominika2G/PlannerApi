@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PlannerApi.Models
 {
@@ -11,6 +8,8 @@ namespace PlannerApi.Models
         public string Login { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
         //IdentityRole RoleId { get; set; }
+        //public ICollection<ProjectUser> ProjectsUsers { get; set; }
     }
 }
