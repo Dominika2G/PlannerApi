@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using PlannerApi.DAL.Configurations;
 using PlannerApi.Models;
 using PlannerApi.Models.Projects;
 using PlannerApi.Models.Projects.TaskEntities;
@@ -18,57 +19,16 @@ namespace PlannerApi.DAL
         public DbSet<Sprint> Sprints { get; set; }
         */
         public DatabaseContext(DbContextOptions options): base(options) { }
+        
 
         /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //*********** ProjectUser **************
-            modelBuilder.Entity<ProjectUser>()
-                .HasKey(pu => new { pu.UserId, pu.ProjectId });
-            modelBuilder.Entity<ProjectUser>()
-                .HasOne(pu => pu.User)
-                .WithMany(pu => pu.ProjectsUsers)
-                .HasForeignKey(pu => pu.UserId);
-            modelBuilder.Entity<ProjectUser>()
-                .HasOne(pu => pu.Project)
-                .WithMany(p => p.ProjectsUsers)
-                .HasForeignKey(pu => pu.ProjectId);
-
-            //*********** TaskPriorities **************
-            modelBuilder.Entity<TaskPriority>()
-                .HasMany(tp => tp.Tasks)
-                .WithOne(p => p.TaskPriority);
-
-            //**************** Task *******************
-            modelBuilder.Entity<Task>()
-                .HasOne(t => t.TaskPriority)
-                .WithMany(tp => tp.Tasks);
-
-            modelBuilder.Entity<Task>()
-                .HasOne(t => t.TaskStatus)
-                .WithMany(t => t.Tasks);
-
-            modelBuilder.Entity<Task>()
-                .HasOne(t => t.TaskType)
-                .WithMany(t => t.Tasks);
-
-            modelBuilder.Entity<Task>()
-                .HasOne(t => t.Sprint)
-                .WithMany(s => s.Tasks);
-
-            //************* TaskStatus ****************
-            modelBuilder.Entity<TaskStatus>()
-                .HasMany(ts => ts.Tasks)
-                .WithOne(p => p.TaskStatus);
-
-            //************** TaskType *****************
-            modelBuilder.Entity<TaskType>()
-                .HasMany(tt => tt.Tasks)
-                .WithOne(t => t.TaskType);
-
-            //**************** Sprint *******************
-            modelBuilder.Entity<Sprint>()
-                .HasMany(s => s.Tasks)
-                .WithOne(t => t.Sprint);
+            modelBuilder.ApplyConfiguration(new ProjectUserConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskPriorityConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskConfigurationcs());
+            modelBuilder.ApplyConfiguration(new TaskStatusConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new SprintConfiguration());
 
         }*/
 
