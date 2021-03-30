@@ -18,12 +18,12 @@ namespace PlannerApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private UserManager<IdentityUser> _userManager;
-        private SignInManager<IdentityUser> _signInManager;
+        private UserManager<User> _userManager;
+        private SignInManager<User> _signInManager;
         private readonly ApplicationSettings _appSettings;
 
         #region Constructor
-        public AuthenticationController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IOptions<ApplicationSettings> appSettings)
+        public AuthenticationController(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<ApplicationSettings> appSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,7 +37,7 @@ namespace PlannerApi.Controllers
         //POST: api/Authentication/Register
         public async Task<Object> PostAuthentication(UserRegisterModel model)
         {
-            var newUser = new IdentityUser()
+            var newUser = new User()
             {
                 UserName = model.UserName,
                 Email = model.Email
