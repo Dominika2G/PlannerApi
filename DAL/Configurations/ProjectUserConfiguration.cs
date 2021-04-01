@@ -1,18 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PlannerApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PlannerApi.DAL.Configurations
 {
-    public class ProjectUserConfiguration: IEntityTypeConfiguration<ProjectUser>
+    public class ProjectUserConfiguration : IEntityTypeConfiguration<ProjectUser>
     {
         public void Configure(EntityTypeBuilder<ProjectUser> builder)
         {
-            /*builder
+            builder
                 .HasKey(pu => new { pu.UserId, pu.ProjectId });
             builder
                 .HasOne(pu => pu.User)
@@ -21,7 +17,7 @@ namespace PlannerApi.DAL.Configurations
             builder
                 .HasOne(pu => pu.Project)
                 .WithMany(p => p.ProjectsUsers)
-                .HasForeignKey(pu => pu.ProjectId);*/
+                .HasForeignKey(pu => pu.ProjectId);
         }
     }
 }

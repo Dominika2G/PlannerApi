@@ -1,7 +1,4 @@
-﻿
-
-using PlannerApi.Models.Projects;
-using System.Collections.Generic;
+﻿using System;
 
 namespace PlannerApi.Models
 {
@@ -9,8 +6,7 @@ namespace PlannerApi.Models
     {
         public int SprintId { get; set; }
         public string Name { get; set; }
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
-        public ICollection<Task> Tasks { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }
