@@ -1,4 +1,5 @@
-﻿using PlannerApi.Models.Projects.TaskEntities;
+﻿using PlannerApi.Models.Authentication;
+using PlannerApi.Models.Projects.TaskEntities;
 
 namespace PlannerApi.Models.Projects
 {

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PlannerApi.DAL.Configurations;
 using PlannerApi.Models;
+using PlannerApi.Models.Authentication;
 using PlannerApi.Models.Projects;
 using PlannerApi.Models.Projects.TaskEntities;
 

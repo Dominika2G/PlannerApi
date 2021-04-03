@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
-namespace PlannerApi.Models
+namespace PlannerApi.Models.Authentication
 {
     public class User : IdentityUser
     {

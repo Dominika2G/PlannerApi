@@ -1,4 +1,6 @@
-﻿namespace PlannerApi.Models
+﻿using PlannerApi.Models.Authentication;
+
+namespace PlannerApi.Models
 {
     public class ProjectUser
     {

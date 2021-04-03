@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PlannerApi.DAL;
 using PlannerApi.Models;
+using PlannerApi.Models.Authentication;
 
 namespace PlannerApi
 {
@@ -32,8 +33,11 @@ namespace PlannerApi
             services.AddDbContext<DatabaseContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnection")));
 
-            services.AddDefaultIdentity<User>()
-                .AddEntityFrameworkStores<DatabaseContext>();
+            //services.AddDefaultIdentity<User>()
+            //    .AddEntityFrameworkStores<DatabaseContext>();
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<DatabaseContext>()
+                .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -81,7 +85,7 @@ namespace PlannerApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            UpdateDatabase(app);
+            //UpdateDatabase(app);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

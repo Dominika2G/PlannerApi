@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using PlannerApi.Models;
+using PlannerApi.Models.Authentication;
 
 namespace PlannerApi.Controllers.Authentication
 {
@@ -12,12 +14,14 @@ namespace PlannerApi.Controllers.Authentication
     public class RegisterController : ControllerBase
     {
         private UserManager<User> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
 
         #region Constructor
 
-        public RegisterController(UserManager<User> userManager, SignInManager<User> signInManager, IOptions<ApplicationSettings> appSettings)
+        public RegisterController(UserManager<User> userManager,  RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         #endregion Constructor
@@ -28,20 +32,44 @@ namespace PlannerApi.Controllers.Authentication
         //POST: api/Register
         public async Task<Object> PostAuthentication(UserRegisterModel model)
         {
+            var userExist = await _userManager.FindByNameAsync(model.UserName);
+
+            if(userExist != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exist" });
+            }
+
             var newUser = new User()
             {
                 UserName = model.UserName,
-                Email = model.Email
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
             };
-            try
+          
+            var result = await _userManager.CreateAsync(newUser, model.Password);
+            if (!result.Succeeded)
             {
-                var result = await _userManager.CreateAsync(newUser, model.Password);
-                return Ok(result);
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed" });
             }
-            catch (Exception ex)
+            //return Ok(new Response { Status = "Success", Message = "User created succesfully" });
+            //return Ok(result);
+            if(!await _roleManager.RoleExistsAsync(UserRoles.Mannager))
             {
-                throw ex;
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Mannager));
             }
+            if(!await _roleManager.RoleExistsAsync(UserRoles.Programmer))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Programmer));
+            }
+            if(!await _roleManager.RoleExistsAsync(UserRoles.Tester))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Tester));
+            }
+            await  _userManager.AddToRoleAsync(newUser, UserRoles.Programmer);
+
+            return Ok(new Response { Status = "Success", Message = "User created succesfully" });
+            //return Ok(result);
         }
 
         #endregion Register
