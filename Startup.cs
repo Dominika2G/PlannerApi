@@ -33,8 +33,6 @@ namespace PlannerApi
             services.AddDbContext<DatabaseContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("DatabaseConnection")));
 
-            //services.AddDefaultIdentity<User>()
-            //    .AddEntityFrameworkStores<DatabaseContext>();
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<DatabaseContext>()
                 .AddDefaultTokenProviders();

@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using PlannerApi.Models;
 using PlannerApi.Models.Authentication;
 
 namespace PlannerApi.Controllers.Authentication
@@ -17,7 +15,6 @@ namespace PlannerApi.Controllers.Authentication
         private RoleManager<IdentityRole> _roleManager;
 
         #region Constructor
-
         public RegisterController(UserManager<User> userManager,  RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
@@ -52,8 +49,7 @@ namespace PlannerApi.Controllers.Authentication
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed" });
             }
-            //return Ok(new Response { Status = "Success", Message = "User created succesfully" });
-            //return Ok(result);
+
             if(!await _roleManager.RoleExistsAsync(UserRoles.Mannager))
             {
                 await _roleManager.CreateAsync(new IdentityRole(UserRoles.Mannager));
@@ -69,7 +65,6 @@ namespace PlannerApi.Controllers.Authentication
             await  _userManager.AddToRoleAsync(newUser, UserRoles.Programmer);
 
             return Ok(new Response { Status = "Success", Message = "User created succesfully" });
-            //return Ok(result);
         }
 
         #endregion Register
