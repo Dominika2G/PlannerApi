@@ -29,6 +29,7 @@ namespace PlannerApi.Controllers.Authentication
         //POST: api/Register
         public async Task<Object> PostAuthentication(UserRegisterModel model)
         {
+            model.Role = "Programmer";
             var userExist = await _userManager.FindByNameAsync(model.UserName);
 
             if(userExist != null)
@@ -45,6 +46,8 @@ namespace PlannerApi.Controllers.Authentication
             };
           
             var result = await _userManager.CreateAsync(newUser, model.Password);
+            //await _userManager.AddToRoleAsync(newUser, model.Role);
+
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed" });
