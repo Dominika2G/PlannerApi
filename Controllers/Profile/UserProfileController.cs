@@ -123,5 +123,42 @@ namespace PlannerApi.Controllers.Profile
             return Conflict();
         }
         #endregion
+
+        #region AddUser
+        [HttpPost]
+        [Authorize]
+        [Route("AddUser")]
+        //POST: api/UserProfile/AddUser
+        public async Task<Object> PostAddUser(UserRegisterModel model)
+        {
+            //model.Role = "Programmer";
+            var userExist = await _userManager.FindByNameAsync(model.UserName);
+
+            if (userExist != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exist" });
+            }
+
+            var newUser = new User()
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+
+            var result = await _userManager.CreateAsync(newUser, model.Password);
+            var role = _context.Roles.Find(model.Role);
+            
+            await _userManager.AddToRoleAsync(newUser, role.Name);
+
+            if (!result.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed" });
+            }
+
+            return Ok(new Response { Status = "Success", Message = "User created succesfully" });
+        }
+        #endregion
     }
 }

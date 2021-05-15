@@ -29,7 +29,6 @@ namespace PlannerApi.Controllers.Authentication
         //POST: api/Register
         public async Task<Object> PostAuthentication(UserRegisterModel model)
         {
-            //model.Role = "Programmer";
             var userExist = await _userManager.FindByNameAsync(model.UserName);
 
             if(userExist != null)
@@ -42,7 +41,8 @@ namespace PlannerApi.Controllers.Authentication
                 UserName = model.UserName,
                 Email = model.Email,
                 FirstName = model.FirstName,
-                LastName = model.LastName
+                LastName = model.LastName,
+                Login = model.UserName
             };
           
             var result = await _userManager.CreateAsync(newUser, model.Password);
