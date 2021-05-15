@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlannerApi.DAL;
 
 namespace PlannerApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210515170344_SeedingData")]
+    partial class SeedingData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -487,8 +489,7 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Programmer1",
                             FirstName = "Programmer1",
-                            LastName = "Test",
-                            Login = "Programmer1"
+                            LastName = "Test"
                         },
                         new
                         {
@@ -506,8 +507,7 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Mannager1",
                             FirstName = "Mannager1",
-                            LastName = "TestMannager1",
-                            Login = "Mannager1"
+                            LastName = "TestMannager1"
                         },
                         new
                         {
@@ -525,8 +525,7 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Mannager2",
                             FirstName = "Mannager2",
-                            LastName = "TestMannager2",
-                            Login = "Mannager2"
+                            LastName = "TestMannager2"
                         },
                         new
                         {
@@ -544,8 +543,7 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Tester1",
                             FirstName = "Tester1",
-                            LastName = "TestTester1",
-                            Login = "Tester1"
+                            LastName = "TestTester1"
                         },
                         new
                         {
@@ -563,8 +561,7 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Programmer2",
                             FirstName = "Programmer2",
-                            LastName = "Test2",
-                            Login = "Programmer2"
+                            LastName = "Test2"
                         });
                 });
 

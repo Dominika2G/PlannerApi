@@ -17,8 +17,10 @@ namespace PlannerApi.Controllers.Authentication
     [ApiController]
     public class LoginController : ControllerBase
     {
+        #region Properties
         private UserManager<User> _userManager;
         private readonly ApplicationSettings _appSettings;
+        #endregion
 
         #region Constructor
         public LoginController(UserManager<User> userManager, IOptions<ApplicationSettings> appSettings)

@@ -29,7 +29,7 @@ namespace PlannerApi.Controllers.Authentication
         //POST: api/Register
         public async Task<Object> PostAuthentication(UserRegisterModel model)
         {
-            model.Role = "Programmer";
+            //model.Role = "Programmer";
             var userExist = await _userManager.FindByNameAsync(model.UserName);
 
             if(userExist != null)
@@ -46,26 +46,12 @@ namespace PlannerApi.Controllers.Authentication
             };
           
             var result = await _userManager.CreateAsync(newUser, model.Password);
-            //await _userManager.AddToRoleAsync(newUser, model.Role);
+            await _userManager.AddToRoleAsync(newUser, model.Role);
 
             if (!result.Succeeded)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed" });
             }
-
-            if(!await _roleManager.RoleExistsAsync(UserRoles.Mannager))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Mannager));
-            }
-            if(!await _roleManager.RoleExistsAsync(UserRoles.Programmer))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Programmer));
-            }
-            if(!await _roleManager.RoleExistsAsync(UserRoles.Tester))
-            {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Tester));
-            }
-            await  _userManager.AddToRoleAsync(newUser, UserRoles.Programmer);
 
             return Ok(new Response { Status = "Success", Message = "User created succesfully" });
         }
