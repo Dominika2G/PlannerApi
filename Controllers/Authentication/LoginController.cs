@@ -56,6 +56,7 @@ namespace PlannerApi.Controllers.Authentication
                 var securityToken = tokenHandler.CreateToken(tokenDescription);
                 var accessToken = tokenHandler.WriteToken(securityToken);
                 var userRole = role.FirstOrDefault();
+                
                 return Ok(new
                 {
                     accessToken,

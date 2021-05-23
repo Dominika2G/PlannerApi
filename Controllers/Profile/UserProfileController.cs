@@ -6,6 +6,7 @@ using PlannerApi.DAL;
 using PlannerApi.Models.Authentication;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,14 +18,16 @@ namespace PlannerApi.Controllers.Profile
     {
         #region Properties
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private DatabaseContext _context;
         #endregion
 
         #region Constructor
-        public UserProfileController(UserManager<User> userManager, DatabaseContext context)
+        public UserProfileController(UserManager<User> userManager, DatabaseContext context, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _context = context;
+            _roleManager = roleManager;
         }
         #endregion
 
@@ -45,11 +48,11 @@ namespace PlannerApi.Controllers.Profile
 
             return Ok(new
             {
-                //user.FirstName,
-                //user.Email,
                 user.UserName,
                 userRole,
-                userId
+                userId,
+                accessToken = User.Identity.IsAuthenticated
+                //accessToken = User.Claims.Select(x => x.Value)
             });
         }
         #endregion
@@ -60,46 +63,70 @@ namespace PlannerApi.Controllers.Profile
         [Route("Users")]
         //GET: api/UserProfile/Users
         //public List<User> GetUsers() => _userManager.Users.ToList();
-        public ActionResult<IEnumerable<Object>> GetUsers()
+        //public ActionResult<IEnumerable<Object>> GetUsers()
+        public async Task<ActionResult<List<Object>>> GetUsers()
         {
-            /*IEnumerable<UsersProfile> listOfUsers = null;
-            foreach(var tmp in _userManager.Users)
+            List<UsersProfile> listOfUsers = new List<UsersProfile>();
+            var list = _userManager.Users.ToList();
+            foreach(var tmp in list)
             {
                 var role = await _userManager.GetRolesAsync(tmp);
                 var userRole = role.FirstOrDefault();
-                listOfUsers.Append(new UsersProfile(
+                var user = new UsersProfile(
                     tmp.Id,
                     tmp.FirstName,
                     tmp.LastName,
                     tmp.Email,
-                    userRole
-                ));
+                    userRole,
+                    tmp.UserName
+                );
+                listOfUsers.Add(user);
             }
-            return listOfUsers;*/
+            if(listOfUsers != null)
+            {
+                return Ok(listOfUsers);
+            }
+            return NoContent();
             
-            return  Ok(_userManager.Users.Select(user => new
+            /*return  Ok(_userManager.Users.Select( user => new
             {
                 user.FirstName,
                 user.LastName,
                 user.Email,
                 user.UserName,
                 user.Id
-            }).ToList());
+
+            }).ToList());*/
         }
         #endregion
 
         #region GetUserDetails
         [HttpGet("{id}")]
+        //[HttpGet]
         [Authorize]
         [Route("UserDetails")]
         //GET: api/UserProfile/UserDetails/{id}
         public async Task<Object> GetUserDetails(string id)
+        //public async Task<Object> GetUserDetails()
         {
             //var id = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9";
             var user = await _userManager.FindByIdAsync(id);
             if(user != null)
             {
-                return Ok(user);
+                var role = await _userManager.GetRolesAsync(user);
+                var userRole = role.FirstOrDefault();
+                var roleByManager = await _roleManager.FindByNameAsync(userRole);
+                var roleId = roleByManager.Id;
+                return Ok(new
+                {
+                    user.Id,
+                    user.UserName,
+                    user.FirstName,
+                    user.LastName,
+                    user.Email,
+                    user.PasswordHash,
+                    roleId
+                });
             }
             return NotFound();
         }
@@ -114,25 +141,30 @@ namespace PlannerApi.Controllers.Profile
         {
             return Ok(_context.Roles.Select(role => new
             {
-                role.Name
+                roleName = role.Name,
+                role.Id
             }).ToList());
         }
         #endregion
 
         #region DeleteUser
         [HttpDelete("{id}")]
+        //[HttpDelete]
         [Route("User")]
         [Authorize]
         //DELETE: api/UserProfile/DeleteUser
+        //public async Task<IActionResult> DeleteUser()
         public async Task<IActionResult> DeleteUser(string id)
         {
+            //var id = "";
             var user = await _userManager.FindByIdAsync(id);
 
             if(user == null)
             {
                 return NotFound();
             }
-
+            var role = await _userManager.GetRolesAsync(user);
+            await _userManager.RemoveFromRolesAsync(user, role);
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
             {
@@ -150,7 +182,6 @@ namespace PlannerApi.Controllers.Profile
         //POST: api/UserProfile/AddUser
         public async Task<Object> PostAddUser(UserRegisterModel model)
         {
-            //model.Role = "Programmer";
             var userExist = await _userManager.FindByNameAsync(model.UserName);
 
             if (userExist != null)
@@ -167,13 +198,13 @@ namespace PlannerApi.Controllers.Profile
             };
 
             var result = await _userManager.CreateAsync(newUser, model.Password);
-            var role = _context.Roles.Find(model.Role);
-            
+            var role = await _roleManager.FindByIdAsync(model.Role);
+
             await _userManager.AddToRoleAsync(newUser, role.Name);
 
             if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed" });
+                return StatusCode(StatusCodes.Status409Conflict, new Response { Status = "Error", Message = "User creation failed" });
             }
 
             return Ok(new Response { Status = "Success", Message = "User created succesfully" });
