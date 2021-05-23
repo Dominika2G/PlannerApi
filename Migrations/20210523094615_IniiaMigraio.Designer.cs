@@ -10,8 +10,8 @@ using PlannerApi.DAL;
 namespace PlannerApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210515170344_SeedingData")]
-    partial class SeedingData
+    [Migration("20210523094615_IniiaMigraio")]
+    partial class IniiaMigraio
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,8 +52,8 @@ namespace PlannerApi.Migrations
                         {
                             Id = "222667d9-4543-498e-948a-5fc1c2dc2d62",
                             ConcurrencyStamp = "2420f8b1-58d7-49a7-8e44-7228b415b93a",
-                            Name = "Mannager",
-                            NormalizedName = "MANNAGER"
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
                         },
                         new
                         {
@@ -68,6 +68,13 @@ namespace PlannerApi.Migrations
                             ConcurrencyStamp = "92265458-1b6a-4a35-99bd-39feda4d1d7a",
                             Name = "Tester",
                             NormalizedName = "TESTER"
+                        },
+                        new
+                        {
+                            Id = "b585f129-1abe-44f9-90a9-1e5d354973cb",
+                            ConcurrencyStamp = "0f602014-30b7-4e62-b18d-c16ad06ddaae",
+                            Name = "Unauthorize",
+                            NormalizedName = "UNAUTHORIZE"
                         });
                 });
 
@@ -489,7 +496,8 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Programmer1",
                             FirstName = "Programmer1",
-                            LastName = "Test"
+                            LastName = "Test",
+                            Login = "Programmer1"
                         },
                         new
                         {
@@ -507,7 +515,8 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Mannager1",
                             FirstName = "Mannager1",
-                            LastName = "TestMannager1"
+                            LastName = "TestMannager1",
+                            Login = "Mannager1"
                         },
                         new
                         {
@@ -525,7 +534,8 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Mannager2",
                             FirstName = "Mannager2",
-                            LastName = "TestMannager2"
+                            LastName = "TestMannager2",
+                            Login = "Mannager2"
                         },
                         new
                         {
@@ -543,7 +553,8 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Tester1",
                             FirstName = "Tester1",
-                            LastName = "TestTester1"
+                            LastName = "TestTester1",
+                            Login = "Tester1"
                         },
                         new
                         {
@@ -561,7 +572,8 @@ namespace PlannerApi.Migrations
                             TwoFactorEnabled = false,
                             UserName = "Programmer2",
                             FirstName = "Programmer2",
-                            LastName = "Test2"
+                            LastName = "Test2",
+                            Login = "Programmer2"
                         });
                 });
 

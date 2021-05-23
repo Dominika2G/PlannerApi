@@ -90,8 +90,8 @@ namespace PlannerApi.DAL.Configurations
                 new IdentityRole
                 {
                     Id = "222667d9-4543-498e-948a-5fc1c2dc2d62",
-                    Name = "Mannager",
-                    NormalizedName = "MANNAGER",
+                    Name = "Manager",
+                    NormalizedName = "MANAGER",
                     ConcurrencyStamp = "2420f8b1-58d7-49a7-8e44-7228b415b93a"
                 },
                 new IdentityRole
@@ -107,6 +107,13 @@ namespace PlannerApi.DAL.Configurations
                     Name = "Tester",
                     NormalizedName = "TESTER",
                     ConcurrencyStamp = "92265458-1b6a-4a35-99bd-39feda4d1d7a"
+                },
+                new IdentityRole
+                {
+                    Id = "b585f129-1abe-44f9-90a9-1e5d354973cb",
+                    Name = "Unauthorize",
+                    NormalizedName = "UNAUTHORIZE",
+                    ConcurrencyStamp = "0f602014-30b7-4e62-b18d-c16ad06ddaae"
                 }
                 );
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(

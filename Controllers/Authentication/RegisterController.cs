@@ -29,6 +29,7 @@ namespace PlannerApi.Controllers.Authentication
         //POST: api/Register
         public async Task<Object> PostAuthentication(UserRegisterModel model)
         {
+            model.Role = "Unauthorize";
             var userExist = await _userManager.FindByNameAsync(model.UserName);
 
             if(userExist != null)
@@ -40,8 +41,8 @@ namespace PlannerApi.Controllers.Authentication
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
+               // FirstName = model.FirstName,
+              //  LastName = model.LastName,
                 Login = model.UserName
             };
           

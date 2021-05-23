@@ -54,9 +54,14 @@ namespace PlannerApi.Controllers.Authentication
 
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var securityToken = tokenHandler.CreateToken(tokenDescription);
-                var token = tokenHandler.WriteToken(securityToken);
-
-                return Ok(new { token });
+                var accessToken = tokenHandler.WriteToken(securityToken);
+                var userRole = role.FirstOrDefault();
+                return Ok(new
+                {
+                    accessToken,
+                    currentUser.UserName,
+                    userRole
+                });
             }
             else
             {

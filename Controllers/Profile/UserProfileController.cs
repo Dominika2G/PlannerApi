@@ -36,6 +36,8 @@ namespace PlannerApi.Controllers.Profile
         {
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
             var user = await _userManager.FindByIdAsync(userId);
+            var role = await _userManager.GetRolesAsync(user);
+            var userRole = role.FirstOrDefault();
             if (user == null)
             {
                 return NotFound();
@@ -43,9 +45,11 @@ namespace PlannerApi.Controllers.Profile
 
             return Ok(new
             {
-                user.FirstName,
-                user.Email,
-                user.UserName
+                //user.FirstName,
+                //user.Email,
+                user.UserName,
+                userRole,
+                userId
             });
         }
         #endregion
@@ -56,9 +60,24 @@ namespace PlannerApi.Controllers.Profile
         [Route("Users")]
         //GET: api/UserProfile/Users
         //public List<User> GetUsers() => _userManager.Users.ToList();
-        public ActionResult<IEnumerable<User>> GetUsers()
+        public ActionResult<IEnumerable<Object>> GetUsers()
         {
-            return Ok(_userManager.Users.Select(user => new
+            /*IEnumerable<UsersProfile> listOfUsers = null;
+            foreach(var tmp in _userManager.Users)
+            {
+                var role = await _userManager.GetRolesAsync(tmp);
+                var userRole = role.FirstOrDefault();
+                listOfUsers.Append(new UsersProfile(
+                    tmp.Id,
+                    tmp.FirstName,
+                    tmp.LastName,
+                    tmp.Email,
+                    userRole
+                ));
+            }
+            return listOfUsers;*/
+            
+            return  Ok(_userManager.Users.Select(user => new
             {
                 user.FirstName,
                 user.LastName,
