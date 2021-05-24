@@ -10,8 +10,8 @@ using PlannerApi.DAL;
 namespace PlannerApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210401163849_complement-db-model")]
-    partial class complementdbmodel
+    [Migration("20210523094615_IniiaMigraio")]
+    partial class IniiaMigraio
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,6 +46,36 @@ namespace PlannerApi.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "222667d9-4543-498e-948a-5fc1c2dc2d62",
+                            ConcurrencyStamp = "2420f8b1-58d7-49a7-8e44-7228b415b93a",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "471cd850-b05f-46ef-9c3b-5785ba3fadcd",
+                            ConcurrencyStamp = "85cadb0c-05e9-4f65-8786-e33e35403468",
+                            Name = "Programmer",
+                            NormalizedName = "PROGRAMMER"
+                        },
+                        new
+                        {
+                            Id = "b83721c8-b13c-4f4e-89a9-7797c4ed0c85",
+                            ConcurrencyStamp = "92265458-1b6a-4a35-99bd-39feda4d1d7a",
+                            Name = "Tester",
+                            NormalizedName = "TESTER"
+                        },
+                        new
+                        {
+                            Id = "b585f129-1abe-44f9-90a9-1e5d354973cb",
+                            ConcurrencyStamp = "0f602014-30b7-4e62-b18d-c16ad06ddaae",
+                            Name = "Unauthorize",
+                            NormalizedName = "UNAUTHORIZE"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -170,12 +200,10 @@ namespace PlannerApi.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -204,6 +232,33 @@ namespace PlannerApi.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "220c495c-95f9-411d-aa86-6b96c2778765",
+                            RoleId = "471cd850-b05f-46ef-9c3b-5785ba3fadcd"
+                        },
+                        new
+                        {
+                            UserId = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
+                            RoleId = "222667d9-4543-498e-948a-5fc1c2dc2d62"
+                        },
+                        new
+                        {
+                            UserId = "72546802-9b55-4a9c-9a4e-50bac18a0028",
+                            RoleId = "222667d9-4543-498e-948a-5fc1c2dc2d62"
+                        },
+                        new
+                        {
+                            UserId = "877a0a41-23b3-4511-89f5-13d1cd5b750a",
+                            RoleId = "b83721c8-b13c-4f4e-89a9-7797c4ed0c85"
+                        },
+                        new
+                        {
+                            UserId = "bf6bea78-174a-4584-8b2e-25a2eb8a1dd3",
+                            RoleId = "471cd850-b05f-46ef-9c3b-5785ba3fadcd"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -212,12 +267,10 @@ namespace PlannerApi.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -411,7 +464,7 @@ namespace PlannerApi.Migrations
                     b.ToTable("Sprints");
                 });
 
-            modelBuilder.Entity("PlannerApi.Models.User", b =>
+            modelBuilder.Entity("PlannerApi.Models.Authentication.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -425,6 +478,103 @@ namespace PlannerApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "220c495c-95f9-411d-aa86-6b96c2778765",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "385ab67e-b229-475b-b110-cf22336fa7df",
+                            Email = "Programmer1@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "PROGRAMMER1@GMAIL.COM",
+                            NormalizedUserName = "PROGRAMMER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEB8qNp+eOtMx8JJXoZofJRmtbZRzM+VAs4RRxM9jeCDlt3JFNCZUOHPztHsOQsFC2Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "UVK6CZ72YKWZSNU3TOGGRWOPDCTB3YYS",
+                            TwoFactorEnabled = false,
+                            UserName = "Programmer1",
+                            FirstName = "Programmer1",
+                            LastName = "Test",
+                            Login = "Programmer1"
+                        },
+                        new
+                        {
+                            Id = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "bbb82cb3-52aa-4343-aa6a-fe6905691128",
+                            Email = "Mannager1@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MANNAGER1@GMAIL.COM",
+                            NormalizedUserName = "MANNAGER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEG7KrHWyF6XjbIf9Lo4U2t/gGw55YYSUCuWE3HiKLlEZ1sER+4J8ILQu6XMvEMb+SQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "A6RBR4GFIXSS22R7VNE2DROTJVBZJAP7",
+                            TwoFactorEnabled = false,
+                            UserName = "Mannager1",
+                            FirstName = "Mannager1",
+                            LastName = "TestMannager1",
+                            Login = "Mannager1"
+                        },
+                        new
+                        {
+                            Id = "72546802-9b55-4a9c-9a4e-50bac18a0028",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ad608c87-5358-44a0-adbb-73fd943e967e",
+                            Email = "Mannager2@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MANNAGER2@GMAIL.COM",
+                            NormalizedUserName = "MANNAGER2",
+                            PasswordHash = "AQAAAAEAACcQAAAAENQEpU1VkSDlK8cljaXgMLq+u7Ij51goayAWqOCG4l0r8so2kXS5R319JOlzyEwZGQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "F32OM56TU5PENGU2UTFFNLD3CYB23KY5",
+                            TwoFactorEnabled = false,
+                            UserName = "Mannager2",
+                            FirstName = "Mannager2",
+                            LastName = "TestMannager2",
+                            Login = "Mannager2"
+                        },
+                        new
+                        {
+                            Id = "877a0a41-23b3-4511-89f5-13d1cd5b750a",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "5394588e-ac19-49c7-8561-d2c2ecdff835",
+                            Email = "Tester1@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "TESTER1@GMAIL.COM",
+                            NormalizedUserName = "TESTER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAENCwxi/ZRTSt1d/QDilsEjojuoP8a+xlASCUUfFmKdLw+CE/5pWmXaMkubsBCpNUYg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "VHO7IDMB3IEVT5G4B75CR55SDVG6DWCE",
+                            TwoFactorEnabled = false,
+                            UserName = "Tester1",
+                            FirstName = "Tester1",
+                            LastName = "TestTester1",
+                            Login = "Tester1"
+                        },
+                        new
+                        {
+                            Id = "bf6bea78-174a-4584-8b2e-25a2eb8a1dd3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "61006890-1a43-42e8-9d07-ac32a67f7690",
+                            Email = "Programmer2@gmail.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "PROGRAMMER2@GMAIL.COM",
+                            NormalizedUserName = "PROGRAMMER2",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDR2zGwptCW0FbPNOrTN/vpprMfJkPfVt2qSMVbTxYKmYUbzKB2TmKjhOp/jLTo6bA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "KLHMYUGUJW7FOETIP7WLOKSUONMWV4WO",
+                            TwoFactorEnabled = false,
+                            UserName = "Programmer2",
+                            FirstName = "Programmer2",
+                            LastName = "Test2",
+                            Login = "Programmer2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -486,7 +636,7 @@ namespace PlannerApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PlannerApi.Models.User", "User")
+                    b.HasOne("PlannerApi.Models.Authentication.User", "User")
                         .WithMany("ProjectsUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -495,7 +645,7 @@ namespace PlannerApi.Migrations
 
             modelBuilder.Entity("PlannerApi.Models.Projects.Comments", b =>
                 {
-                    b.HasOne("PlannerApi.Models.User", "Author")
+                    b.HasOne("PlannerApi.Models.Authentication.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId1");
 
@@ -508,11 +658,11 @@ namespace PlannerApi.Migrations
 
             modelBuilder.Entity("PlannerApi.Models.Projects.Task", b =>
                 {
-                    b.HasOne("PlannerApi.Models.User", "Assignee")
+                    b.HasOne("PlannerApi.Models.Authentication.User", "Assignee")
                         .WithMany()
                         .HasForeignKey("AssigneeId1");
 
-                    b.HasOne("PlannerApi.Models.User", "Reporter")
+                    b.HasOne("PlannerApi.Models.Authentication.User", "Reporter")
                         .WithMany()
                         .HasForeignKey("ReporterId1");
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlannerApi.Models.Authentication;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace PlannerApi.Models.Projects
