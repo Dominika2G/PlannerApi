@@ -31,6 +31,94 @@ namespace PlannerApi.Controllers.Profile
         }
         #endregion
 
+        #region UpdateOwnProfile
+        [HttpPost]
+        [Authorize]
+        [Route("UpdateOwnProfile")]
+        //PATCH: api/UserProfile/UpdateUser
+        public async Task<IActionResult> UpdateOwnProfile(UpdateOwnProfile model)
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if(! string.IsNullOrEmpty(model.FirstName))
+            {
+                user.FirstName = model.FirstName;
+            }
+            if(!string.IsNullOrEmpty(model.LastName))
+            {
+                user.LastName = model.LastName;
+            }
+            if(!string.IsNullOrEmpty(model.Email))
+            {
+                user.Email = model.Email;
+            }
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok("");
+            }
+
+            return Conflict();
+        }
+        #endregion
+
+        #region ChangeOwnPassword
+        [HttpPost]
+        [Authorize]
+        [Route("UpdateOwnPassword")]
+        public async Task<Object> UpdateOwuPassword(ChangePassword model)
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                return Conflict();
+            }
+
+            return Ok("");
+
+        }
+        #endregion
+
+        #region GetOwnProfile
+        [HttpGet]
+        [Authorize]
+        [Route("GetOwnProfile")]
+        public async Task<Object> GetOwnProfile()
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            var role = await _userManager.GetRolesAsync(user);
+            var userRole = role.FirstOrDefault();
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                user.UserName,
+                RoleName = userRole,
+                user.FirstName,
+                user.LastName,
+                EmailAddress = user.Email
+            });
+
+        }
+        #endregion
+
         #region PostUserProfile
         [HttpPost]
         [Authorize]
@@ -87,16 +175,6 @@ namespace PlannerApi.Controllers.Profile
                 return Ok(listOfUsers);
             }
             return NoContent();
-            
-            /*return  Ok(_userManager.Users.Select( user => new
-            {
-                user.FirstName,
-                user.LastName,
-                user.Email,
-                user.UserName,
-                user.Id
-
-            }).ToList());*/
         }
         #endregion
 
@@ -210,5 +288,58 @@ namespace PlannerApi.Controllers.Profile
             return Ok(new Response { Status = "Success", Message = "User created succesfully" });
         }
         #endregion
+
+        #region UpdateUser
+        [HttpPut]
+        [Authorize]
+        [Route("UpdateUser")]
+        //PATCH: api/UserProfile/UpdateUser
+        public async Task<IActionResult> PuthUser(UserDetails user)
+        {
+            var existingUser = await _userManager.FindByIdAsync(user.Id);
+            if(existingUser == null)
+            {
+                return NotFound();
+            }
+            if (!string.IsNullOrEmpty(user.UserName))
+            {
+                existingUser.UserName = user.UserName;
+            }
+            if(!string.IsNullOrEmpty(user.FirstName))
+            {
+                existingUser.FirstName = user.FirstName;
+            }
+            if(!string.IsNullOrEmpty(user.LastName))
+            {
+                existingUser.LastName = user.LastName;
+            }
+            if(!string.IsNullOrEmpty(user.NewPassword) && !string.IsNullOrEmpty(user.OldPassword))
+            {
+                await _userManager.ChangePasswordAsync(existingUser, user.OldPassword, user.NewPassword);
+            }
+            if(!string.IsNullOrEmpty(user.RoleId))
+            {
+                var role = await _userManager.GetRolesAsync(existingUser);
+                var userRole = role.FirstOrDefault();
+                await _userManager.RemoveFromRoleAsync(existingUser, userRole);
+                var findRole = await _roleManager.FindByIdAsync(user.RoleId);
+
+                await _userManager.AddToRoleAsync(existingUser, findRole.Name);
+            }
+            if(!string.IsNullOrEmpty(user.Email))
+            {
+                existingUser.Email = user.Email;
+            }
+
+            var result = await _userManager.UpdateAsync(existingUser);
+            if (result.Succeeded)
+            {
+                return Ok("");
+            }
+
+            return Conflict();
+        }
+        #endregion
     }
+
 }
