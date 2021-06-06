@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PlannerApi.Models.Projects;
+using System;
+using System.Collections.Generic;
 
 namespace PlannerApi.Models
 {
@@ -8,5 +10,7 @@ namespace PlannerApi.Models
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        public ICollection<Task> Tasks { get; set; }
     }
 }
