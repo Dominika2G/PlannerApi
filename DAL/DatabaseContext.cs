@@ -28,7 +28,11 @@ namespace PlannerApi.DAL
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new ProjectUserConfiguration());
+            modelBuilder.ApplyConfiguration(new TaskConfiguration());
+            modelBuilder.ApplyConfiguration(new CommentsConfiguration());
+            modelBuilder.ApplyConfiguration(new SprintConfiguration());
             modelBuilder.Seed();
+            modelBuilder.Seed2();
         }
     }
 }

@@ -10,8 +10,8 @@ using PlannerApi.DAL;
 namespace PlannerApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20210523094615_IniiaMigraio")]
-    partial class IniiaMigraio
+    [Migration("20210612164942_Update")]
+    partial class Update
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -293,6 +293,33 @@ namespace PlannerApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Projects");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Cryptowallet"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Darknet AI"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Steam 2.0"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Polsl galaxy"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Some random stuff"
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.ProjectUser", b =>
@@ -308,19 +335,43 @@ namespace PlannerApi.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("ProjectsUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
+                            ProjectId = 1
+                        },
+                        new
+                        {
+                            UserId = "220c495c-95f9-411d-aa86-6b96c2778765",
+                            ProjectId = 1
+                        },
+                        new
+                        {
+                            UserId = "877a0a41-23b3-4511-89f5-13d1cd5b750a",
+                            ProjectId = 1
+                        },
+                        new
+                        {
+                            UserId = "72546802-9b55-4a9c-9a4e-50bac18a0028",
+                            ProjectId = 2
+                        },
+                        new
+                        {
+                            UserId = "877a0a41-23b3-4511-89f5-13d1cd5b750a",
+                            ProjectId = 2
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.Projects.Comments", b =>
                 {
-                    b.Property<int>("CommentId")
+                    b.Property<int>("CommentsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AuthorId1")
+                    b.Property<string>("AuthorId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Content")
@@ -332,13 +383,39 @@ namespace PlannerApi.Migrations
                     b.Property<int>("TaskId")
                         .HasColumnType("int");
 
-                    b.HasKey("CommentId");
+                    b.HasKey("CommentsId");
 
-                    b.HasIndex("AuthorId1");
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("TaskId");
 
                     b.ToTable("Comments");
+
+                    b.HasData(
+                        new
+                        {
+                            CommentsId = 1,
+                            AuthorId = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
+                            Content = "Some random stuff goes here.",
+                            StartDate = new DateTime(2021, 5, 12, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            TaskId = 1
+                        },
+                        new
+                        {
+                            CommentsId = 2,
+                            AuthorId = "220c495c-95f9-411d-aa86-6b96c2778765",
+                            Content = "Pretty neat!",
+                            StartDate = new DateTime(2021, 5, 13, 9, 35, 0, 0, DateTimeKind.Unspecified),
+                            TaskId = 2
+                        },
+                        new
+                        {
+                            CommentsId = 3,
+                            AuthorId = "72546802-9b55-4a9c-9a4e-50bac18a0028",
+                            Content = "Cumque qui odit consequatur provident molestiae qui voluptas.Vitae autem et consequatur ipsum.Quis ipsum exercitationem natus velit.Ut qui eum sint magnam doloremque. Voluptatibus enim non rerum facilis numquam ea error numquam.Quas et non eligendi a reprehenderit libero et assumenda.",
+                            StartDate = new DateTime(2021, 5, 18, 14, 2, 0, 0, DateTimeKind.Unspecified),
+                            TaskId = 1
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.Projects.Task", b =>
@@ -348,10 +425,7 @@ namespace PlannerApi.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AssigneeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AssigneeId1")
+                    b.Property<string>("AssigneeId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Description")
@@ -363,10 +437,7 @@ namespace PlannerApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ReporterId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReporterId1")
+                    b.Property<string>("ReporterId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("SprintId")
@@ -383,9 +454,9 @@ namespace PlannerApi.Migrations
 
                     b.HasKey("TaskId");
 
-                    b.HasIndex("AssigneeId1");
+                    b.HasIndex("AssigneeId");
 
-                    b.HasIndex("ReporterId1");
+                    b.HasIndex("ReporterId");
 
                     b.HasIndex("SprintId");
 
@@ -396,6 +467,34 @@ namespace PlannerApi.Migrations
                     b.HasIndex("TaskTypeId");
 
                     b.ToTable("Tasks");
+
+                    b.HasData(
+                        new
+                        {
+                            TaskId = 1,
+                            AssigneeId = "220c495c-95f9-411d-aa86-6b96c2778765",
+                            Description = "Task 1 description",
+                            EstimatedTime = "10",
+                            Name = "Task 1",
+                            ReporterId = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
+                            SprintId = 1,
+                            TaskPriorityId = 1,
+                            TaskStatusId = 1,
+                            TaskTypeId = 2
+                        },
+                        new
+                        {
+                            TaskId = 2,
+                            AssigneeId = "877a0a41-23b3-4511-89f5-13d1cd5b750a",
+                            Description = "Task 2 description",
+                            EstimatedTime = "16",
+                            Name = "Task 2",
+                            ReporterId = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
+                            SprintId = 2,
+                            TaskPriorityId = 2,
+                            TaskStatusId = 3,
+                            TaskTypeId = 2
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.Projects.TaskEntities.TaskPriority", b =>
@@ -411,6 +510,33 @@ namespace PlannerApi.Migrations
                     b.HasKey("TaskPriorityId");
 
                     b.ToTable("TaskPriorities");
+
+                    b.HasData(
+                        new
+                        {
+                            TaskPriorityId = 1,
+                            Name = "Low"
+                        },
+                        new
+                        {
+                            TaskPriorityId = 2,
+                            Name = "Normal"
+                        },
+                        new
+                        {
+                            TaskPriorityId = 3,
+                            Name = "High"
+                        },
+                        new
+                        {
+                            TaskPriorityId = 4,
+                            Name = "Urgent"
+                        },
+                        new
+                        {
+                            TaskPriorityId = 5,
+                            Name = "IMMEDIATE"
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.Projects.TaskEntities.TaskStatus", b =>
@@ -426,6 +552,33 @@ namespace PlannerApi.Migrations
                     b.HasKey("TaskStatusId");
 
                     b.ToTable("TaskStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            TaskStatusId = 1,
+                            TaskName = "New"
+                        },
+                        new
+                        {
+                            TaskStatusId = 2,
+                            TaskName = "In progress"
+                        },
+                        new
+                        {
+                            TaskStatusId = 3,
+                            TaskName = "Pending"
+                        },
+                        new
+                        {
+                            TaskStatusId = 4,
+                            TaskName = "Testing"
+                        },
+                        new
+                        {
+                            TaskStatusId = 5,
+                            TaskName = "Reply"
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.Projects.TaskEntities.TaskType", b =>
@@ -441,6 +594,23 @@ namespace PlannerApi.Migrations
                     b.HasKey("TaskTypeId");
 
                     b.ToTable("TaskTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            TaskTypeId = 1,
+                            Name = "Task"
+                        },
+                        new
+                        {
+                            TaskTypeId = 2,
+                            Name = "Error"
+                        },
+                        new
+                        {
+                            TaskTypeId = 3,
+                            Name = "Proposal"
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.Sprint", b =>
@@ -456,12 +626,59 @@ namespace PlannerApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("SprintId");
 
+                    b.HasIndex("ProjectId");
+
                     b.ToTable("Sprints");
+
+                    b.HasData(
+                        new
+                        {
+                            SprintId = 1,
+                            EndDate = new DateTime(2021, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Sprint 1",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2021, 3, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            SprintId = 2,
+                            EndDate = new DateTime(2021, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Sprint 2",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2021, 2, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            SprintId = 3,
+                            EndDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Sprint 3",
+                            ProjectId = 2,
+                            StartDate = new DateTime(2021, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            SprintId = 4,
+                            EndDate = new DateTime(2021, 1, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Sprint 4",
+                            ProjectId = 2,
+                            StartDate = new DateTime(2021, 1, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            SprintId = 5,
+                            EndDate = new DateTime(2021, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Name = "Sprint 5",
+                            ProjectId = 3,
+                            StartDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("PlannerApi.Models.Authentication.User", b =>
@@ -647,10 +864,10 @@ namespace PlannerApi.Migrations
                 {
                     b.HasOne("PlannerApi.Models.Authentication.User", "Author")
                         .WithMany()
-                        .HasForeignKey("AuthorId1");
+                        .HasForeignKey("AuthorId");
 
                     b.HasOne("PlannerApi.Models.Projects.Task", "Task")
-                        .WithMany()
+                        .WithMany("CommentsList")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -660,14 +877,14 @@ namespace PlannerApi.Migrations
                 {
                     b.HasOne("PlannerApi.Models.Authentication.User", "Assignee")
                         .WithMany()
-                        .HasForeignKey("AssigneeId1");
+                        .HasForeignKey("AssigneeId");
 
                     b.HasOne("PlannerApi.Models.Authentication.User", "Reporter")
                         .WithMany()
-                        .HasForeignKey("ReporterId1");
+                        .HasForeignKey("ReporterId");
 
                     b.HasOne("PlannerApi.Models.Sprint", "Sprint")
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("SprintId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -687,6 +904,15 @@ namespace PlannerApi.Migrations
                     b.HasOne("PlannerApi.Models.Projects.TaskEntities.TaskType", "TaskType")
                         .WithMany()
                         .HasForeignKey("TaskTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PlannerApi.Models.Sprint", b =>
+                {
+                    b.HasOne("PlannerApi.Models.Project", "Project")
+                        .WithMany("Sprints")
+                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

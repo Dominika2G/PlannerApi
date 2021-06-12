@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlannerApi.DAL;
 
 namespace PlannerApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210606152028_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -624,15 +626,10 @@ namespace PlannerApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("SprintId");
-
-                    b.HasIndex("ProjectId");
 
                     b.ToTable("Sprints");
 
@@ -642,7 +639,6 @@ namespace PlannerApi.Migrations
                             SprintId = 1,
                             EndDate = new DateTime(2021, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sprint 1",
-                            ProjectId = 1,
                             StartDate = new DateTime(2021, 3, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -650,7 +646,6 @@ namespace PlannerApi.Migrations
                             SprintId = 2,
                             EndDate = new DateTime(2021, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sprint 2",
-                            ProjectId = 1,
                             StartDate = new DateTime(2021, 2, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -658,7 +653,6 @@ namespace PlannerApi.Migrations
                             SprintId = 3,
                             EndDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sprint 3",
-                            ProjectId = 2,
                             StartDate = new DateTime(2021, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -666,7 +660,6 @@ namespace PlannerApi.Migrations
                             SprintId = 4,
                             EndDate = new DateTime(2021, 1, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sprint 4",
-                            ProjectId = 2,
                             StartDate = new DateTime(2021, 1, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -674,7 +667,6 @@ namespace PlannerApi.Migrations
                             SprintId = 5,
                             EndDate = new DateTime(2021, 1, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Name = "Sprint 5",
-                            ProjectId = 3,
                             StartDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -902,15 +894,6 @@ namespace PlannerApi.Migrations
                     b.HasOne("PlannerApi.Models.Projects.TaskEntities.TaskType", "TaskType")
                         .WithMany()
                         .HasForeignKey("TaskTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PlannerApi.Models.Sprint", b =>
-                {
-                    b.HasOne("PlannerApi.Models.Project", "Project")
-                        .WithMany("Sprints")
-                        .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

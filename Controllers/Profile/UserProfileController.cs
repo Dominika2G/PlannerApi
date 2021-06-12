@@ -156,6 +156,7 @@ namespace PlannerApi.Controllers.Profile
         {
             List<UsersProfile> listOfUsers = new List<UsersProfile>();
             var list = _userManager.Users.ToList();
+      
             foreach(var tmp in list)
             {
                 var role = await _userManager.GetRolesAsync(tmp);
@@ -234,7 +235,6 @@ namespace PlannerApi.Controllers.Profile
         //public async Task<IActionResult> DeleteUser()
         public async Task<IActionResult> DeleteUser(string id)
         {
-            //var id = "";
             var user = await _userManager.FindByIdAsync(id);
 
             if(user == null)
