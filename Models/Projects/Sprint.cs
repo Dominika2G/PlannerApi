@@ -11,6 +11,8 @@ namespace PlannerApi.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
+        public int ProjectId { get; set; }
+        public Project Project { get; set; }
         public ICollection<Task> Tasks { get; set; }
     }
 }

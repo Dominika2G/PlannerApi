@@ -9,6 +9,7 @@ namespace PlannerApi.Models
         public string Name { get; set; }
 
         public ICollection<ProjectUser> ProjectsUsers { get; set; }
+        public ICollection<Sprint> Sprints { get; set; }
 
     }
 }

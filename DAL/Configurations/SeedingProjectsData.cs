@@ -120,35 +120,40 @@ namespace PlannerApi.DAL.Configurations
                     SprintId = 1,
                     Name = "Sprint 1",
                     StartDate = new DateTime(2021, 3, 2),
-                    EndDate = new DateTime(2021, 3, 15)
+                    EndDate = new DateTime(2021, 3, 15),
+                    ProjectId = 1
                 },
                 new Sprint
                 {
                     SprintId = 2,
                     Name = "Sprint 2",
                     StartDate = new DateTime(2021, 2, 16),
-                    EndDate = new DateTime(2021, 3, 1)
+                    EndDate = new DateTime(2021, 3, 1),
+                    ProjectId = 1
                 },
                 new Sprint
                 {
                     SprintId = 3,
                     Name = "Sprint 3",
                     StartDate = new DateTime(2021, 1, 31),
-                    EndDate = new DateTime(2021, 2, 15)
+                    EndDate = new DateTime(2021, 2, 15),
+                    ProjectId = 2
                 },
                 new Sprint
                 {
                     SprintId = 4,
                     Name = "Sprint 4",
                     StartDate = new DateTime(2021, 1, 16),
-                    EndDate = new DateTime(2021, 1, 30)
+                    EndDate = new DateTime(2021, 1, 30),
+                    ProjectId = 2
                 },
                 new Sprint
                 {
                     SprintId = 5,
                     Name = "Sprint 5",
                     StartDate = new DateTime(2021, 1, 1),
-                    EndDate = new DateTime(2021, 1, 15)
+                    EndDate = new DateTime(2021, 1, 15),
+                    ProjectId = 3
                 }
             );
 
