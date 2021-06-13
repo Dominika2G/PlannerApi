@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlannerApi.DAL;
+using PlannerApi.Models;
 using PlannerApi.Models.Authentication;
+using PlannerApi.Models.ProjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +45,11 @@ namespace PlannerApi.Controllers.Planner
         }
         #endregion
 
+
+        //DOKOŃCZYĆ USÓWANIE!!!!!
         #region DeleteProject
         /*[HttpDelete("{id}")]*/
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Authorize]
         [Route("DeleteProject")]
         /*public async Task<IActionResult> DeleteProject([FromBody] int id)*/
@@ -69,5 +73,63 @@ namespace PlannerApi.Controllers.Planner
             return Conflict();
         }
         #endregion
+
+        #region GetProjectDetails
+        //[HttpGet("id")]
+        [HttpGet]
+        [Authorize]
+        [Route("GetProjectDetails")]
+        /*public async Task<ActionResult<Object>> GetProjectDetails([FromHeader] int id)*/
+        public async Task<ActionResult<Object>> GetProjectDetails()
+        {
+            var id = 1;
+            var project = _context.Projects.FirstOrDefault(p => p.Id == id);
+            var users = _context.ProjectsUsers.Where(p => p.ProjectId == id).Select(u => u.UserId).ToArray();
+
+            if (project != null)
+            {
+                return Ok(new
+                {
+                    project.Id,
+                    project.Name,
+                    assignedUserIds = _context.ProjectsUsers.Where(p => p.ProjectId == id).Select(u => u.UserId).ToArray()
+                });
+            }
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return Conflict();
+        }
+        #endregion
+
+
+        //DOKOŃCZYĆ
+        #region AddProject
+        [HttpPost]
+        [Authorize]
+        [Route("AddProject")]
+        //public async Task<IActionResult> AddProject(AddProjectModel model)
+        public async Task<IActionResult> AddProject()
+        {
+            var project = new Project
+            {
+               // Id = 7,
+                Name ="Hello",
+                ProjectsUsers = null,
+                Sprints = null
+            };
+
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+
+            
+            return Ok();
+            
+        } 
+        #endregion
+
     }
 }

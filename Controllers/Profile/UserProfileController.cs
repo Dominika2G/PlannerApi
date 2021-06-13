@@ -185,7 +185,7 @@ namespace PlannerApi.Controllers.Profile
         [Authorize]
         [Route("UserDetails")]
         //GET: api/UserProfile/UserDetails/{id}
-        public async Task<Object> GetUserDetails(string id)
+        public async Task<Object> GetUserDetails([FromHeader] string id)
         //public async Task<Object> GetUserDetails()
         {
             //var id = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9";
