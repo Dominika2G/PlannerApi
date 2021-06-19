@@ -13,6 +13,7 @@ namespace PlannerApi.DAL.Configurations
             builder
                 .HasOne(pu => pu.User)
                 .WithMany(pu => pu.ProjectsUsers)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(pu => pu.UserId);
             builder
                 .HasOne(pu => pu.Project)

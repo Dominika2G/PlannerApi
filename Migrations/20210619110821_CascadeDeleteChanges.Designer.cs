@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PlannerApi.DAL;
 
 namespace PlannerApi.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210619110821_CascadeDeleteChanges")]
+    partial class CascadeDeleteChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -438,7 +440,7 @@ namespace PlannerApi.Migrations
                     b.Property<string>("ReporterId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("SprintId")
+                    b.Property<int>("SprintId")
                         .HasColumnType("int");
 
                     b.Property<int>("TaskPriorityId")
@@ -884,7 +886,8 @@ namespace PlannerApi.Migrations
                     b.HasOne("PlannerApi.Models.Sprint", "Sprint")
                         .WithMany("Tasks")
                         .HasForeignKey("SprintId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("PlannerApi.Models.Projects.TaskEntities.TaskPriority", "TaskPriority")
                         .WithMany()

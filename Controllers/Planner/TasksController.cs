@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlannerApi.DAL;
 using PlannerApi.Models.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PlannerApi.Controllers.Planner
 {
@@ -16,21 +14,26 @@ namespace PlannerApi.Controllers.Planner
     public class TasksController : ControllerBase
     {
         #region Properties
+
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private DatabaseContext _context;
-        #endregion
+
+        #endregion Properties
 
         #region Constructor
+
         public TasksController(UserManager<User> usermanager, RoleManager<IdentityRole> roleManager, DatabaseContext context)
         {
             _userManager = usermanager;
             _roleManager = roleManager;
             _context = context;
         }
-        #endregion
 
-        #region GetComments 
+        #endregion Constructor
+
+        #region GetComments
+
         [HttpGet("{id}")]
         [Authorize]
         [Route("GetComments")]
@@ -38,7 +41,7 @@ namespace PlannerApi.Controllers.Planner
         {
             var task = _context.Tasks.FirstOrDefault(t => t.TaskId == id);
             var comments = _context.Tasks.Where(t => t.TaskId == id).Select(l => l.CommentsList).ToArray();
-            if(comments.Count() > 0)
+            if (comments.Count() > 0)
             {
                 var result = task.CommentsList.Select(c => new
                 {
@@ -73,9 +76,35 @@ namespace PlannerApi.Controllers.Planner
                 CreationTime = c.StartDate
             }).ToArray());*/
         }
-        #endregion
+
+        #endregion GetComments
+
+        [HttpDelete]
+        [Authorize]
+        [Route("DeleteTask")]
+        /*public async Task<IActionResult> DeleteProject([FromBody] int id)*/
+        public async Task<IActionResult> DeleteTask()
+        {
+            var id = 1;
+            var project = _context.Tasks.FirstOrDefault(x => x.TaskId == id);
+            //var project = await _context.Projects.FindAsync(id);
+            if (project == null)
+            {
+                NotFound();
+            }
+
+            if (project != null)
+            {
+                _context.Tasks.Remove(project);
+                _context.SaveChanges();
+                return Ok();
+            }
+
+            return Conflict();
+        }
 
         #region GetOwnTask
+
         [HttpGet]
         [Authorize]
         [Route("GetOwnTasks")]
@@ -95,18 +124,16 @@ namespace PlannerApi.Controllers.Planner
                 StatusName = t.TaskStatus.TaskName,
                 PriorityName = t.TaskPriority.Name,
                 t.EstimatedTime
-
-
             }).ToArray();
 
-            if(result != null)
+            if (result != null)
             {
                 return Ok(result);
             }
 
             return NotFound();
 
-            /*return Ok( _context.Tasks.Where(x => x.AssigneeId == userId).Select(t => new { 
+            /*return Ok( _context.Tasks.Where(x => x.AssigneeId == userId).Select(t => new {
                 t.TaskId,
                 t.Name,
                 t.Description,
@@ -117,14 +144,13 @@ namespace PlannerApi.Controllers.Planner
                 StatusName = t.TaskStatus.TaskName,
                 PriorityName = t.TaskPriority.Name,
                 t.EstimatedTime
-
-
             }).ToArray());*/
         }
 
-        #endregion
+        #endregion GetOwnTask
 
         #region GetTaskDetails
+
         [HttpGet("{id}")]
         [Authorize]
         [Route("GetTaskDetails")]
@@ -143,11 +169,9 @@ namespace PlannerApi.Controllers.Planner
                 StatusName = t.TaskStatus.TaskName,
                 PriorityName = t.TaskPriority.Name,
                 t.EstimatedTime
-
-
             }).ToArray();
 
-            if(result != null)
+            if (result != null)
             {
                 return Ok(result);
             }
@@ -164,13 +188,13 @@ namespace PlannerApi.Controllers.Planner
                 StatusName = t.TaskStatus.TaskName,
                 PriorityName = t.TaskPriority.Name,
                 t.EstimatedTime
-
-
             }).ToArray());*/
         }
-        #endregion
+
+        #endregion GetTaskDetails
 
         #region GetManagedTaskDetails
+
         [HttpGet("{id}")]
         [Authorize]
         [Route("GetManagedTaskDetails")]
@@ -188,11 +212,9 @@ namespace PlannerApi.Controllers.Planner
                 t.TaskStatusId,
                 t.TaskPriorityId,
                 t.EstimatedTime
-
-
             }).ToArray();
 
-            if(result != null)
+            if (result != null)
             {
                 return Ok(result);
             }
@@ -208,13 +230,13 @@ namespace PlannerApi.Controllers.Planner
                 t.TaskStatusId,
                 t.TaskPriorityId,
                 t.EstimatedTime
-
-
             }).ToArray());*/
         }
-        #endregion
+
+        #endregion GetManagedTaskDetails
 
         #region GetNewTaskManagementOptions
+
         [HttpGet("{projectId}")]
         [Authorize]
         [Route("GetNewTaskManagementOptions")]
@@ -231,9 +253,11 @@ namespace PlannerApi.Controllers.Planner
                 PermittedAssignees = _context.Projects.Where(p => p.Id == projectId).Select(p => p.ProjectsUsers.Select(u => new { u.UserId, u.User.UserName }).ToArray()).ToArray()
             });
         }
-        #endregion GetTaskManagementOptions
 
-        #region 
+        #endregion GetNewTaskManagementOptions
+
+        #region
+
         [HttpGet("{taskId}")]
         [Authorize]
         [Route("GetTaskManagementOptions")]
@@ -250,7 +274,7 @@ namespace PlannerApi.Controllers.Planner
                 PermittedAssignees = _context.Projects.Where(p => p.Id == 1).Select(p => p.ProjectsUsers).ToArray()
             });
         }
-        #endregion
 
+        #endregion
     }
 }

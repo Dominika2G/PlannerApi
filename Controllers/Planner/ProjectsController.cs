@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlannerApi.DAL;
 using PlannerApi.Models;
 using PlannerApi.Models.Authentication;
-using PlannerApi.Models.ProjectModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PlannerApi.Controllers.Planner
 {
@@ -18,44 +16,53 @@ namespace PlannerApi.Controllers.Planner
     public class ProjectsController : ControllerBase
     {
         #region Properties
+
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private DatabaseContext _context;
-        #endregion
+
+        #endregion Properties
 
         #region Constructor
+
         public ProjectsController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, DatabaseContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _context = context;
         }
-        #endregion
+
+        #endregion Constructor
 
         #region GetProjects
+
         [HttpGet]
         [Authorize]
         [Route("GetProjects")]
         public async Task<ActionResult<List<Object>>> GetProjects()
         {
-            return Ok(_context.Projects.Select(p => new {
-                    p.Id,
-                    p.Name
-                    }).ToArray());
+            return Ok(_context.Projects.Select(p => new
+            {
+                p.Id,
+                p.Name
+            }).ToArray());
         }
-        #endregion
 
+        #endregion GetProjects
 
         //DOKOŃCZYĆ USÓWANIE!!!!!
+
         #region DeleteProject
+
         /*[HttpDelete("{id}")]*/
+
         [HttpDelete]
         [Authorize]
         [Route("DeleteProject")]
         /*public async Task<IActionResult> DeleteProject([FromBody] int id)*/
         public async Task<IActionResult> DeleteProject()
         {
-            var id = 5;
+            var id = 1;
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
             //var project = await _context.Projects.FindAsync(id);
             if (project == null)
@@ -63,7 +70,7 @@ namespace PlannerApi.Controllers.Planner
                 NotFound();
             }
 
-            if(project != null)
+            if (project != null)
             {
                 _context.Projects.Remove(project);
                 _context.SaveChanges();
@@ -72,9 +79,11 @@ namespace PlannerApi.Controllers.Planner
 
             return Conflict();
         }
-        #endregion
+
+        #endregion DeleteProject
 
         #region GetProjectDetails
+
         //[HttpGet("id")]
         [HttpGet]
         [Authorize]
@@ -103,11 +112,13 @@ namespace PlannerApi.Controllers.Planner
 
             return Conflict();
         }
-        #endregion
 
+        #endregion GetProjectDetails
 
         //DOKOŃCZYĆ
+
         #region AddProject
+
         [HttpPost]
         [Authorize]
         [Route("AddProject")]
@@ -116,8 +127,8 @@ namespace PlannerApi.Controllers.Planner
         {
             var project = new Project
             {
-               // Id = 7,
-                Name ="Hello",
+                // Id = 7,
+                Name = "Hello",
                 ProjectsUsers = null,
                 Sprints = null
             };
@@ -125,12 +136,9 @@ namespace PlannerApi.Controllers.Planner
             await _context.Projects.AddAsync(project);
             await _context.SaveChangesAsync();
 
-            
             return Ok();
-            
-        } 
-        #endregion
+        }
 
-
+        #endregion AddProject
     }
 }
