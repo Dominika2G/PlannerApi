@@ -214,7 +214,43 @@ namespace PlannerApi.Controllers.Planner
         }
         #endregion
 
-        
+        #region GetNewTaskManagementOptions
+        [HttpGet("{projectId}")]
+        [Authorize]
+        [Route("GetNewTaskManagementOptions")]
+        public ActionResult GetNewTaskManagementOptions([FromHeader] int projectId)
+        {
+            DateTime thisDay = DateTime.Today;
+
+            return Ok(new
+            {
+                PermittedStatuses = _context.TaskStatuses.Select(s => new { s.TaskStatusId, s.TaskName }).ToArray(),
+                PermittedTaskTypes = _context.TaskTypes.Select(t => new { t.TaskTypeId, t.Name }).ToArray(),
+                PermittedTaskPriorities = _context.TaskPriorities.Select(p => new { p.TaskPriorityId, p.Name }).ToArray(),
+                PermittedAssignableSprints = _context.Sprints.Where(x => x.EndDate.CompareTo(thisDay) > 0).Select(s => new { s.SprintId, s.Name }).ToArray(),
+                PermittedAssignees = _context.Projects.Where(p => p.Id == projectId).Select(p => p.ProjectsUsers.Select(u => new { u.UserId, u.User.UserName }).ToArray()).ToArray()
+            });
+        }
+        #endregion GetTaskManagementOptions
+
+        #region 
+        [HttpGet("{taskId}")]
+        [Authorize]
+        [Route("GetTaskManagementOptions")]
+        public ActionResult GetTaskManagementOptions([FromHeader] int taskId)
+        {
+            DateTime thisDay = DateTime.Today;
+
+            return Ok(new
+            {
+                PermittedStatuses = _context.TaskStatuses.Select(s => new { s.TaskStatusId, s.TaskName }).ToArray(),
+                PermittedTaskTypes = _context.TaskTypes.Select(t => new { t.TaskTypeId, t.Name }).ToArray(),
+                PermittedTaskPriorities = _context.TaskPriorities.Select(p => new { p.TaskPriorityId, p.Name }).ToArray(),
+                PermittedAssignableSprints = _context.Sprints.Where(x => x.EndDate.CompareTo(thisDay) > 0).Select(s => new { s.SprintId, s.Name }).ToArray(),
+                PermittedAssignees = _context.Projects.Where(p => p.Id == 1).Select(p => p.ProjectsUsers).ToArray()
+            });
+        }
+        #endregion
 
     }
 }
