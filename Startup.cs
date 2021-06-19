@@ -83,19 +83,19 @@ namespace PlannerApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //UpdateDatabase(app);
+            UpdateDatabase(app);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
+            //app.UseSwagger();
 
-            app.UseSwaggerUI(current =>
-            {
-                current.SwaggerEndpoint("/swagger/v0.1/swagger.json", "Planner API");
-                current.RoutePrefix = string.Empty;
-            });
+            //app.UseSwaggerUI(current =>
+            //{
+            //    current.SwaggerEndpoint("/swagger/v0.1/swagger.json", "Planner API");
+            //    current.RoutePrefix = string.Empty;
+            //});
 
             app.UseHttpsRedirection();
 

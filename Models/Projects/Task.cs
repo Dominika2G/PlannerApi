@@ -1,7 +1,6 @@
-﻿using PlannerApi.Models.Authentication;
+﻿using System.Collections.Generic;
+using PlannerApi.Models.Authentication;
 using PlannerApi.Models.Projects.TaskEntities;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace PlannerApi.Models.Projects
 {
@@ -18,8 +17,8 @@ namespace PlannerApi.Models.Projects
         public TaskStatus TaskStatus { get; set; }
         public int TaskTypeId { get; set; }
         public TaskType TaskType { get; set; }
-        public int SprintId { get; set; }
-        public Sprint Sprint { get; set; }
+        public int? SprintId { get; set; }
+        public Sprint? Sprint { get; set; }
         public string ReporterId { get; set; }
         public User Reporter { get; set; }
         public string AssigneeId { get; set; }

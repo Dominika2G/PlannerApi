@@ -1,6 +1,6 @@
-﻿using PlannerApi.Models.Projects;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using PlannerApi.Models.Projects;
 
 namespace PlannerApi.Models
 {
