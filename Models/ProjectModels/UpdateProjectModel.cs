@@ -9,6 +9,6 @@ namespace PlannerApi.Models.ProjectModels
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        //public ICollection<string> AssignedUserIds { get; set; }
+        public List<string> AssignedUserIds { get; set; }
     }
 }

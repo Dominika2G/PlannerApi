@@ -51,7 +51,6 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion GetProjects
 
-
         #region DeleteProject
 
         [HttpDelete("{id}")]
@@ -113,8 +112,6 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion GetProjectDetails
 
-        //DODAWANIE PROJEKTÓW DZIAŁA ALE BEZ USERÓW
-        //DOKOŃCZYĆ DODAĆ USERÓW
         #region AddProject
 
         [HttpPost]
@@ -146,8 +143,6 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion
 
-        //UPDATE DZIAŁA ALE BEZ USERÓW
-        //DODAĆ UPDATE USERÓW
         #region UpdateProject
 
         [HttpPut]
@@ -166,6 +161,30 @@ namespace PlannerApi.Controllers.Planner
 
             _context.Update(existingProject);
             _context.SaveChanges();
+
+            var projectId = _context.Projects.FirstOrDefault(p => p.Name == model.Name);
+
+            var listUser = _context.ProjectsUsers.Select(p => p.UserId).ToList();
+
+            foreach(var tmp in listUser)
+            {
+                if (model.AssignedUserIds.Contains(tmp))
+                {
+                    model.AssignedUserIds.Remove(tmp);
+                }
+            }
+
+            foreach(var tmp in model.AssignedUserIds)
+            {
+                var projUser = new ProjectUser
+                {
+                    UserId = tmp,
+                    ProjectId = projectId.Id
+                };
+                await _context.ProjectsUsers.AddAsync(projUser);
+            }
+
+            await _context.SaveChangesAsync();
 
             return Ok();
 

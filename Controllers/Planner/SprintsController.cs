@@ -104,8 +104,7 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion
 
-        //DODAWANIE SPRINTU ZROBIONE ANALOGICZNIE JAK W PROJEKTACH, ALE W POSTMANIE WYSKAKUJE BŁĄD
-        //DO POPRAWY
+        //DODAWANIE JEST OK, PROBLEM Z DATETIME
         #region AddSprint
 
         [HttpPost]
@@ -118,8 +117,8 @@ namespace PlannerApi.Controllers.Planner
             {
                 //SprintId = model.Id,
                 Name = model.Name,
-                StartDate = model.StartTime,
-                EndDate = model.EndTime
+                /*StartDate = model.StartTime,
+                EndDate = model.EndTime*/
             };
 
             await _context.Sprints.AddAsync(sprint);
@@ -131,7 +130,7 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion
 
-        //DODAWANIE TASKA DZIAŁA, TRZEBA JESZCZE TYLKO SPRAWDZIĆ CZY DATETIME JEST CZY NIE ZOSTAŁ PODANY
+        //UPDATE SPRINTU DZIAŁA, TRZEBA JESZCZE TYLKO SPRAWDZIĆ CZY DATETIME JEST CZY NIE ZOSTAŁ PODANY
         #region UpdateSprint
         [HttpPut]
         [Authorize]
