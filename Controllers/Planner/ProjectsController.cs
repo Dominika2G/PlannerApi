@@ -131,10 +131,20 @@ namespace PlannerApi.Controllers.Planner
             await _context.Projects.AddAsync(project);
             await _context.SaveChangesAsync();
 
+            var projectId = _context.Projects.FirstOrDefault(p => p.Name == model.Name);
+            foreach(var tmp in model.AssignedUserIds)
+            {
+                ProjectUser projUser = new ProjectUser();
+                projUser.ProjectId = projectId.Id;
+                projUser.UserId = tmp;
+                await _context.ProjectsUsers.AddAsync(projUser);
+            }
+            await _context.SaveChangesAsync();
+
             return Ok();
         }
 
-        #endregion AddProject
+        #endregion
 
         //UPDATE DZIAŁA ALE BEZ USERÓW
         //DODAĆ UPDATE USERÓW
