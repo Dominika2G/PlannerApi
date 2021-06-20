@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PlannerApi.DAL;
 using PlannerApi.Models.Authentication;
+using PlannerApi.Models.TaskModel;
+using PlannerApi.Models.Projects;
+using System.Threading.Tasks;
 
 namespace PlannerApi.Controllers.Planner
 {
@@ -79,6 +81,8 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion GetComments
 
+        #region DeleteTask
+
         [HttpDelete]
         [Authorize]
         [Route("DeleteTask")]
@@ -102,6 +106,8 @@ namespace PlannerApi.Controllers.Planner
 
             return Conflict();
         }
+
+        #endregion
 
         #region GetOwnTask
 
@@ -256,25 +262,112 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion GetNewTaskManagementOptions
 
-        #region
-
-        [HttpGet("{taskId}")]
+        #region CreateTask
+        [HttpPost]
         [Authorize]
-        [Route("GetTaskManagementOptions")]
-        public ActionResult GetTaskManagementOptions([FromHeader] int taskId)
+        [Route("CreateTask")]
+        public async Task<ActionResult> CreateTask(CreateTaskModel model)
         {
-            DateTime thisDay = DateTime.Today;
-
-            return Ok(new
+            var task = new Models.Projects.Task
             {
-                PermittedStatuses = _context.TaskStatuses.Select(s => new { s.TaskStatusId, s.TaskName }).ToArray(),
-                PermittedTaskTypes = _context.TaskTypes.Select(t => new { t.TaskTypeId, t.Name }).ToArray(),
-                PermittedTaskPriorities = _context.TaskPriorities.Select(p => new { p.TaskPriorityId, p.Name }).ToArray(),
-                PermittedAssignableSprints = _context.Sprints.Where(x => x.EndDate.CompareTo(thisDay) > 0).Select(s => new { s.SprintId, s.Name }).ToArray(),
-                PermittedAssignees = _context.Projects.Where(p => p.Id == 1).Select(p => p.ProjectsUsers).ToArray()
-            });
-        }
+                Name = model.Name,
+                Description = model.Description,
+                AssigneeId = model.AssigneedId,
+                SprintId = model.SprintId,
+                TaskStatusId = (int)model.TaskStatusId,
+                TaskTypeId = (int)model.TaskTypeId,
+                TaskPriorityId = (int)model.TaskPriorityId,
+                EstimatedTime = model.EstimatedTime
+            };
 
+            await _context.Tasks.AddAsync(task);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+        #endregion
+
+        #region UpdateTask
+        [HttpPatch]
+        [Authorize]
+        [Route("UpdateTask")]
+        public async Task<ActionResult> UpdateTask(CreateTaskModel model)
+        {
+            var existingTask = _context.Tasks.FirstOrDefault(t => t.TaskId == model.Id);
+
+            if(existingTask == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrEmpty(model.Name))
+            {
+                existingTask.Name = model.Name;
+            }
+
+            if (!string.IsNullOrEmpty(model.Description))
+            {
+                existingTask.Description = model.Description;
+            }
+
+            if (!string.IsNullOrEmpty(model.AssigneedId))
+            {
+                existingTask.AssigneeId = model.AssigneedId;
+            }
+
+            if (!string.IsNullOrEmpty(model.EstimatedTime))
+            {
+                existingTask.EstimatedTime = model.EstimatedTime;
+            }
+
+            if(model.TaskPriorityId != null)
+            {
+                existingTask.TaskPriorityId = (int)model.TaskPriorityId;
+            }
+
+            if(model.TaskStatusId != null)
+            {
+                existingTask.TaskStatusId = (int)model.TaskStatusId;
+            }
+
+            if(model.TaskTypeId != null)
+            {
+                existingTask.TaskTypeId = (int)model.TaskTypeId;
+            }
+
+            if(model.SprintId != null)
+            {
+                existingTask.SprintId = (int)model.SprintId;
+            }
+
+            _context.Tasks.Update(existingTask);
+            _context.SaveChanges();
+
+            return Ok();
+        }
+        #endregion
+
+        #region AppendCommentForTask
+        [HttpPost]
+        [Authorize]
+        [Route("AppendCommentForTask")]
+        public async Task<ActionResult> AddComment(CommentModel model)
+        {
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
+            var date = DateTime.Today;
+            var comments = new Comments
+            {
+                AuthorId = userId,
+                Content = model.CommentContent,
+                TaskId = model.TaskId,
+                StartDate = date
+            };
+
+            await _context.Comments.AddAsync(comments);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
         #endregion
     }
 }

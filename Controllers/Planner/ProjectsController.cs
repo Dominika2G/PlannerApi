@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using PlannerApi.DAL;
 using PlannerApi.Models;
 using PlannerApi.Models.Authentication;
+using PlannerApi.Models.ProjectModels;
 
 namespace PlannerApi.Controllers.Planner
 {
@@ -50,21 +51,18 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion GetProjects
 
-        //DOKOŃCZYĆ USÓWANIE!!!!!
 
         #region DeleteProject
 
-        /*[HttpDelete("{id}")]*/
-
-        [HttpDelete]
+        [HttpDelete("{id}")]
+        /*[HttpDelete]*/
         [Authorize]
         [Route("DeleteProject")]
-        /*public async Task<IActionResult> DeleteProject([FromBody] int id)*/
-        public async Task<IActionResult> DeleteProject()
+        public async Task<IActionResult> DeleteProject([FromBody] int id)
+        /*public async Task<IActionResult> DeleteProject()*/
         {
-            var id = 1;
+            /*var id = 1;*/
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
-            //var project = await _context.Projects.FindAsync(id);
             if (project == null)
             {
                 NotFound();
@@ -115,22 +113,19 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion GetProjectDetails
 
-        //DOKOŃCZYĆ
-
+        //DODAWANIE PROJEKTÓW DZIAŁA ALE BEZ USERÓW
+        //DOKOŃCZYĆ DODAĆ USERÓW
         #region AddProject
 
         [HttpPost]
         [Authorize]
         [Route("AddProject")]
         //public async Task<IActionResult> AddProject(AddProjectModel model)
-        public async Task<IActionResult> AddProject()
+        public async Task<IActionResult> AddProject(AddProjectModel model)
         {
             var project = new Project
             {
-                // Id = 7,
-                Name = "Hello",
-                ProjectsUsers = null,
-                Sprints = null
+                Name = model.Name,
             };
 
             await _context.Projects.AddAsync(project);
@@ -140,5 +135,32 @@ namespace PlannerApi.Controllers.Planner
         }
 
         #endregion AddProject
+
+        //UPDATE DZIAŁA ALE BEZ USERÓW
+        //DODAĆ UPDATE USERÓW
+        #region UpdateProject
+
+        [HttpPut]
+        [Authorize]
+        [Route("UpdateProject")]
+        public async Task<ActionResult> UpdateProject(UpdateProjectModel model){
+
+            var existingProject = _context.Projects.FirstOrDefault(p => p.Id == model.Id);
+            
+            if(existingProject == null)
+            {
+                return NotFound();
+            }
+
+            existingProject.Name = model.Name;
+
+            _context.Update(existingProject);
+            _context.SaveChanges();
+
+            return Ok();
+
+        }
+
+        #endregion
     }
 }
