@@ -130,7 +130,7 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion
 
-        //UPDATE SPRINTU DZIAŁA, TRZEBA JESZCZE TYLKO SPRAWDZIĆ CZY DATETIME JEST CZY NIE ZOSTAŁ PODANY
+        //UPDATE SPRINTU DZIAŁA, TRZEBA JESZCZE TYLKO SPRAWDZIĆ CZY DATETIME JEST CZY NIE ZOST!Ł PODANY
         #region UpdateSprint
         [HttpPut]
         [Authorize]

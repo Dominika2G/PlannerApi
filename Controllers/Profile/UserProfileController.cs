@@ -12,7 +12,8 @@ using System.Threading.Tasks;
 
 namespace PlannerApi.Controllers.Profile
 {
-    [Route("api/[controller]")]
+    /*[Route("api/[controller]")]*/
+    [Route("api/Users")]
     [ApiController]
     public class UserProfileController : ControllerBase
     {
@@ -122,6 +123,7 @@ namespace PlannerApi.Controllers.Profile
         #region PostUserProfile
         [HttpPost]
         [Authorize]
+        [Route("GetUserByAccessToken")]
         //POST: api/UserProfile
         public async Task<Object> PostUserProfile()
         {
@@ -148,7 +150,7 @@ namespace PlannerApi.Controllers.Profile
         #region GetUsers
         [HttpGet]
         [Authorize]
-        [Route("Users")]
+        [Route("GetUsers")]
         //GET: api/UserProfile/Users
         //public List<User> GetUsers() => _userManager.Users.ToList();
         //public ActionResult<IEnumerable<Object>> GetUsers()
@@ -183,7 +185,7 @@ namespace PlannerApi.Controllers.Profile
         [HttpGet("{id}")]
         //[HttpGet]
         [Authorize]
-        [Route("UserDetails")]
+        [Route("GetUserDetails")]
         //GET: api/UserProfile/UserDetails/{id}
         public async Task<Object> GetUserDetails([FromHeader] string id)
         //public async Task<Object> GetUserDetails()
@@ -214,7 +216,7 @@ namespace PlannerApi.Controllers.Profile
         #region GetRoles
         [HttpGet]
         [Authorize]
-        [Route("Roles")]
+        [Route("GetRoles")]
         //GET: /api/UserProfile/Roles
         public ActionResult<IEnumerable<IdentityRole>> GetRoles()
         {
@@ -229,7 +231,7 @@ namespace PlannerApi.Controllers.Profile
         #region DeleteUser
         [HttpDelete("{id}")]
         //[HttpDelete]
-        [Route("User")]
+        [Route("DeleteUser")]
         [Authorize]
         //DELETE: api/UserProfile/DeleteUser
         //public async Task<IActionResult> DeleteUser()
