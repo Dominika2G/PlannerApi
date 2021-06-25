@@ -34,13 +34,13 @@ namespace PlannerApi.Controllers.Authentication
 
             if(userExist != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exist" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { ErrorInfo = "User already exists" });
             }
 
             var newUser = new User()
             {
                 UserName = model.UserName,
-                Email = model.Email,
+                Email = model.EmailAddress,
                // FirstName = model.FirstName,
               //  LastName = model.LastName,
                 Login = model.UserName
@@ -51,7 +51,7 @@ namespace PlannerApi.Controllers.Authentication
 
             if (!result.Succeeded)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { ErrorInfo = "User creation failed" });
             }
 
             return Ok(new Response { Status = "Success", Message = "User created succesfully" });

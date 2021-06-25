@@ -66,7 +66,7 @@ namespace PlannerApi.Controllers.Authentication
             }
             else
             {
-                return BadRequest(new { message = "Password or login is incorrect" });
+                return NotFound(new { message = "Password or login is incorrect" });
             }
         }
         #endregion

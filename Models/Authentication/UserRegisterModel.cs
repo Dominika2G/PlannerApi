@@ -9,10 +9,11 @@ namespace PlannerApi.Models.Authentication
 
         public String Password { get; set; }
 
-        public String Email { get; set; }
+        public String EmailAddress { get; set; }
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Role { get; set; }
+        public string RoleId { get; set; }
     }
 }

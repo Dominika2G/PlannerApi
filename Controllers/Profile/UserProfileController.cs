@@ -72,7 +72,7 @@ namespace PlannerApi.Controllers.Profile
         #region ChangeOwnPassword
         [HttpPost]
         [Authorize]
-        [Route("UpdateOwnPassword")]
+        [Route("ChangeOwnPassword")]
         public async Task<Object> UpdateOwuPassword(ChangePassword model)
         {
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
@@ -122,7 +122,7 @@ namespace PlannerApi.Controllers.Profile
 
         #region PostUserProfile
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         [Route("GetUserByAccessToken")]
         //POST: api/UserProfile
         public async Task<Object> PostUserProfile()
@@ -141,7 +141,7 @@ namespace PlannerApi.Controllers.Profile
                 user.UserName,
                 userRole,
                 userId,
-                accessToken = User.Identity.IsAuthenticated
+                accessToken = (object)null
                 //accessToken = User.Claims.Select(x => x.Value)
             });
         }
@@ -156,21 +156,21 @@ namespace PlannerApi.Controllers.Profile
         //public ActionResult<IEnumerable<Object>> GetUsers()
         public async Task<ActionResult<List<Object>>> GetUsers()
         {
-            List<UsersProfile> listOfUsers = new List<UsersProfile>();
+            List<object> listOfUsers = new List<object>();
             var list = _userManager.Users.ToList();
-      
-            foreach(var tmp in list)
+
+            foreach (var tmp in list)
             {
                 var role = await _userManager.GetRolesAsync(tmp);
-                var userRole = role.FirstOrDefault();
-                var user = new UsersProfile(
+                var roleName = role.FirstOrDefault();
+                var user = new {
                     tmp.Id,
                     tmp.FirstName,
                     tmp.LastName,
-                    tmp.Email,
-                    userRole,
-                    tmp.UserName
-                );
+                    emailAddress = tmp.Email,
+                    roleName,
+                    username = tmp.UserName
+                };
                 listOfUsers.Add(user);
             }
             if(listOfUsers != null)
@@ -182,12 +182,12 @@ namespace PlannerApi.Controllers.Profile
         #endregion
 
         #region GetUserDetails
-        [HttpGet("{id}")]
+        [HttpGet]
         //[HttpGet]
         [Authorize]
-        [Route("GetUserDetails")]
+        [Route("GetUserDetails/{id}")]
         //GET: api/UserProfile/UserDetails/{id}
-        public async Task<Object> GetUserDetails([FromHeader] string id)
+        public async Task<Object> GetUserDetails(string id)
         //public async Task<Object> GetUserDetails()
         {
             //var id = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9";
@@ -204,7 +204,7 @@ namespace PlannerApi.Controllers.Profile
                     user.UserName,
                     user.FirstName,
                     user.LastName,
-                    user.Email,
+                    EmailAddress = user.Email,
                     user.PasswordHash,
                     roleId
                 });
@@ -229,15 +229,15 @@ namespace PlannerApi.Controllers.Profile
         #endregion
 
         #region DeleteUser
-        [HttpDelete("{id}")]
+        [HttpDelete]
         //[HttpDelete]
         [Route("DeleteUser")]
         [Authorize]
         //DELETE: api/UserProfile/DeleteUser
         //public async Task<IActionResult> DeleteUser()
-        public async Task<IActionResult> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(DeleteModel model)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(model.Id);
 
             if(user == null)
             {
@@ -272,13 +272,13 @@ namespace PlannerApi.Controllers.Profile
             var newUser = new User()
             {
                 UserName = model.UserName,
-                Email = model.Email,
+                Email = model.EmailAddress,
                 FirstName = model.FirstName,
                 LastName = model.LastName
             };
 
             var result = await _userManager.CreateAsync(newUser, model.Password);
-            var role = await _roleManager.FindByIdAsync(model.Role);
+            var role = await _roleManager.FindByIdAsync(model.RoleId);
 
             await _userManager.AddToRoleAsync(newUser, role.Name);
 
@@ -328,9 +328,9 @@ namespace PlannerApi.Controllers.Profile
 
                 await _userManager.AddToRoleAsync(existingUser, findRole.Name);
             }
-            if(!string.IsNullOrEmpty(user.Email))
+            if(!string.IsNullOrEmpty(user.EmailAddress))
             {
-                existingUser.Email = user.Email;
+                existingUser.Email = user.EmailAddress;
             }
 
             var result = await _userManager.UpdateAsync(existingUser);
