@@ -34,6 +34,56 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion Constructor
 
+        #region GetSprintWithTasks
+        [HttpGet]
+        [Authorize]
+        [Route("GetSprintWithTasks/{id}")]
+        public ActionResult GetSprintWithTasks(int id)
+        {
+            //var data = from sp in _context.Sprints
+            //           join tsk in _context.Tasks on sp.SprintId equals tsk.SprintId
+            //           where sp.SprintId == id
+            //           select new { sp, tsk };
+
+            var sprint = _context.Sprints.FirstOrDefault(t => t.SprintId == id);
+            var tasks = sprint.Tasks;
+
+            if (sprint != null)
+            {
+                SimpleSprintWithTasks pageOfTasks = new SimpleSprintWithTasks()
+                {
+                    ProjectId = id,
+                    ProjectName = sprint.Project.Name,
+                    SprintName = sprint.Name,
+                    PageOfTasks = new Models.Pagination.DataPage<SimpleTask>()
+                    {
+                        HasNextPage = false,
+                        HasPreviousPage = false,
+                        LastPageIndex = 1,
+                        MaxPageSize = int.MaxValue,
+                        PageIndex = 1,
+                        Pages = tasks.Select(t => new SimpleTask
+                        {
+                            Id = t.TaskId,
+                            Description = t.Description,
+                            Name = t.Name,
+                            SprintId = t.SprintId.Value,
+                            SprintName = t.Sprint.Name,
+                            AssigneeName = t.Assignee.UserName,
+                            EstimatedTime = 10,
+                            StatusName = t.TaskStatus.TaskName,
+                            PriorityName = t.TaskPriority.Name,
+                            ReporterName = t.Reporter.UserName,
+                            TypeName = t.TaskType.Name
+                        }).ToList()
+                    }
+                };
+                return Ok(pageOfTasks);
+            }
+            return NotFound();
+        }
+        #endregion
+
         #region GetComments
 
         [HttpGet("{id}")]

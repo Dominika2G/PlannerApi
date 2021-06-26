@@ -52,72 +52,62 @@ namespace PlannerApi.Controllers.Planner
         #endregion GetProjects
 
         #region DeleteProject
-
-        [HttpDelete("{id}")]
-        /*[HttpDelete]*/
+        [HttpDelete]
         [Authorize]
-        [Route("DeleteProject")]
-        public async Task<IActionResult> DeleteProject([FromBody] int id)
-        /*public async Task<IActionResult> DeleteProject()*/
+        [Route("DeleteProject/{id}")]
+        public async Task<IActionResult> DeleteProject(int id)
         {
-            /*var id = 1;*/
             var project = _context.Projects.FirstOrDefault(x => x.Id == id);
             if (project == null)
             {
-                NotFound();
+                return await Task.FromResult(NotFound());
             }
 
             if (project != null)
             {
                 _context.Projects.Remove(project);
                 _context.SaveChanges();
-                return Ok();
+                return await Task.FromResult(Ok());
             }
 
-            return Conflict();
+            return await Task.FromResult(Conflict());
         }
 
         #endregion DeleteProject
 
         #region GetProjectDetails
-
-        //[HttpGet("id")]
         [HttpGet]
         [Authorize]
-        [Route("GetProjectDetails")]
-        /*public async Task<ActionResult<Object>> GetProjectDetails([FromHeader] int id)*/
-        public async Task<ActionResult<Object>> GetProjectDetails()
+        [Route("GetProjectDetails/{id}")]
+        public async Task<ActionResult<Object>> GetProjectDetails(int id)
         {
-            var id = 1;
             var project = _context.Projects.FirstOrDefault(p => p.Id == id);
             var users = _context.ProjectsUsers.Where(p => p.ProjectId == id).Select(u => u.UserId).ToArray();
 
             if (project != null)
             {
-                return Ok(new
+                return await Task.FromResult(Ok(new
                 {
                     project.Id,
                     project.Name,
                     assignedUserIds = _context.ProjectsUsers.Where(p => p.ProjectId == id).Select(u => u.UserId).ToArray()
-                });
+                }));
             }
 
             if (project == null)
             {
-                return NotFound();
+                return await Task.FromResult(NotFound());
             }
 
-            return Conflict();
+            return await Task.FromResult(Conflict());
         }
 
         #endregion GetProjectDetails
 
         #region AddProject
-
         [HttpPost]
         [Authorize]
         [Route("AddProject")]
-        //public async Task<IActionResult> AddProject(AddProjectModel model)
         public async Task<IActionResult> AddProject(AddProjectModel model)
         {
             var project = new Project
@@ -162,32 +152,30 @@ namespace PlannerApi.Controllers.Planner
             _context.Update(existingProject);
             _context.SaveChanges();
 
-            var projectId = _context.Projects.FirstOrDefault(p => p.Name == model.Name);
+            var project = _context.Projects.SingleOrDefault(p => p.Name == model.Name);
 
-            var listUser = _context.ProjectsUsers.Select(p => p.UserId).ToList();
+            var listUserOfProject = _context.ProjectsUsers
+                .Where(p => p.ProjectId == project.Id)
+                .Select(p => p.UserId)
+                .ToList();
 
-            foreach(var tmp in listUser)
-            {
-                if (model.AssignedUserIds.Contains(tmp))
-                {
-                    model.AssignedUserIds.Remove(tmp);
-                }
-            }
+            _context.ProjectsUsers.RemoveRange(_context.ProjectsUsers
+                .Where(p => p.ProjectId == project.Id));
 
-            foreach(var tmp in model.AssignedUserIds)
+            await _context.SaveChangesAsync();
+
+            foreach (var tmp in model.AssignedUserIds)
             {
                 var projUser = new ProjectUser
                 {
                     UserId = tmp,
-                    ProjectId = projectId.Id
+                    ProjectId = project.Id
                 };
                 await _context.ProjectsUsers.AddAsync(projUser);
             }
 
             await _context.SaveChangesAsync();
-
             return Ok();
-
         }
 
         #endregion

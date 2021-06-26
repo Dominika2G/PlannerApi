@@ -35,13 +35,11 @@ namespace PlannerApi.Controllers.Planner
         #endregion Constructor
 
         #region GetProjectsWithSprints
-
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize]
-        [Route("GetProjectWithSprints")]
-        public ActionResult GetProjectWithSprints([FromHeader] int id)
+        [Route("GetProjectWithSprints/{id}")]
+        public ActionResult GetProjectWithSprints(int id)
         {
-            //var id = 1;
             var project = _context.Projects.FirstOrDefault(p => p.Id == id);
             var users = _context.ProjectsUsers.Where(p => p.ProjectId == id).Select(u => u.UserId).ToArray();
 
@@ -58,7 +56,7 @@ namespace PlannerApi.Controllers.Planner
                     }).ToArray(),
                     Sprints = _context.Sprints.Where(p => p.ProjectId == id).Select(s => new
                     {
-                        s.SprintId,
+                        Id = s.SprintId,
                         s.Name,
                         StartTime = s.StartDate,
                         EndTime = s.EndDate
@@ -73,17 +71,40 @@ namespace PlannerApi.Controllers.Planner
 
             return Conflict();
         }
+        #endregion GetProjectsWithSprints
 
+        #region GetSprintDetails
+        [HttpGet]
+        [Authorize]
+        [Route("GetSprintDetails/{id}")]
+        public ActionResult GetSprintDetails(int id)
+        {
+            var sprint = _context.Sprints.FirstOrDefault(p => p.SprintId == id);
+
+            if (sprint != null)
+            {
+                return Ok(new
+                {
+                    Id = sprint.SprintId,
+                    Name = sprint.Name,
+                    StartTime = sprint.StartDate,
+                    EndTime = sprint.EndDate,
+                    ProjectId = sprint.ProjectId
+                });
+            }
+            else if (sprint == null)
+            {
+                return NotFound();
+            }
+            return Conflict();
+        }
         #endregion GetProjectsWithSprints
 
         #region DeleteSprint
-
-        /*[HttpDelete]*/
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Authorize]
-        [Route("DeleteSprint")]
-        /*public async Task<IActionResult> DeleteSprint([FromBody] int id)*/
-        public async Task<IActionResult> DeleteSprint([FromBody] int id)
+        [Route("DeleteSprint/{id}")]
+        public async Task<IActionResult> DeleteSprint(int id)
         {
             /*var id = 2;*/
             var project = _context.Sprints.FirstOrDefault(x => x.SprintId == id);
@@ -104,21 +125,18 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion
 
-        //DODAWANIE JEST OK, PROBLEM Z DATETIME
         #region AddSprint
-
         [HttpPost]
         [Authorize]
         [Route("AddSprint")]
-        //public async Task<IActionResult> AddProject(AddProjectModel model)
         public async Task<IActionResult> AddSprint(AddSprintModel model)
         {
             var sprint = new Sprint
             {
-                //SprintId = model.Id,
                 Name = model.Name,
-                /*StartDate = model.StartTime,
-                EndDate = model.EndTime*/
+                StartDate = model.StartTime,
+                EndDate = model.EndTime,
+                ProjectId = model.ProjectId
             };
 
             await _context.Sprints.AddAsync(sprint);
@@ -130,7 +148,6 @@ namespace PlannerApi.Controllers.Planner
 
         #endregion
 
-        //UPDATE SPRINTU DZIAŁA, TRZEBA JESZCZE TYLKO SPRAWDZIĆ CZY DATETIME JEST CZY NIE ZOST!Ł PODANY
         #region UpdateSprint
         [HttpPut]
         [Authorize]
