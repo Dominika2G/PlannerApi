@@ -429,8 +429,8 @@ namespace PlannerApi.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EstimatedTime")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("EstimatedTime")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -472,7 +472,7 @@ namespace PlannerApi.Migrations
                             TaskId = 1,
                             AssigneeId = "220c495c-95f9-411d-aa86-6b96c2778765",
                             Description = "Task 1 description",
-                            EstimatedTime = "10",
+                            EstimatedTime = 10,
                             Name = "Task 1",
                             ReporterId = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
                             SprintId = 1,
@@ -485,7 +485,7 @@ namespace PlannerApi.Migrations
                             TaskId = 2,
                             AssigneeId = "877a0a41-23b3-4511-89f5-13d1cd5b750a",
                             Description = "Task 2 description",
-                            EstimatedTime = "16",
+                            EstimatedTime = 16,
                             Name = "Task 2",
                             ReporterId = "547fb67e-7bac-4e68-ae07-7d7a2309b9d9",
                             SprintId = 2,

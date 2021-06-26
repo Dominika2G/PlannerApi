@@ -16,7 +16,7 @@ namespace PlannerApi.Models.TaskModel
         /// <summary>
         /// ID of the project the tasks are assigned for
         /// </summary>
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
 
         /// <summary>
         /// Name of the proejct the tasks are assigned for

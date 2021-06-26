@@ -8,6 +8,7 @@ using PlannerApi.Models.Authentication;
 using PlannerApi.Models.TaskModel;
 using PlannerApi.Models.Projects;
 using System.Threading.Tasks;
+using PlannerApi.Models.Pagination;
 
 namespace PlannerApi.Controllers.Planner
 {
@@ -36,16 +37,56 @@ namespace PlannerApi.Controllers.Planner
 
         #region GetSprintWithTasks
         [HttpGet]
-        [Authorize]
+       // [Authorize]
         [Route("GetSprintWithTasks/{id}")]
         public ActionResult GetSprintWithTasks(int id)
         {
+            var sprint = _context.Sprints.FirstOrDefault(p => p.SprintId == id);
+            var project = _context.Projects.FirstOrDefault(p => p.Id == sprint.ProjectId);
+            var tasks = _context.Tasks.Where(t => t.SprintId == sprint.SprintId).ToList();
+            if (sprint != null)
+            {
+                return Ok(new
+                {
+                    ProjectId = sprint.ProjectId,
+                    ProjectName = project.Name,
+                    SprintName = sprint.Name,
+                    PageOfTasks = new
+                    {
+                        HasNextPage = false,
+                        HasPreviousPage = false,
+                        LastPageIndex = 1,
+                        MaxPageSize = int.MaxValue,
+                        PageIndex = 1,
+                        Pages = tasks.Select(t => new 
+                        {
+                            Id = t.TaskId,
+                            Description = t.Description,
+                            Name = t.Name,
+                            SprintId = t.SprintId,
+                            EstimatedTime = 10,
+                            SprintName = sprint.Name,
+                            PriorityName = _context.TaskPriorities.FirstOrDefault(x => x.TaskPriorityId == t.TaskPriorityId).Name,
+                            ReporterName = _context.Users.FirstOrDefault(u => u.Id == t.ReporterId).UserName,
+                            AssigneeName = _context.Users.FirstOrDefault(u => u.Id == t.AssigneeId).UserName,
+                            StatusName = _context.TaskStatuses.FirstOrDefault(s => s.TaskStatusId == t.TaskStatusId).TaskName,
+                            TypeName = _context.TaskTypes.FirstOrDefault(x => x.TaskTypeId == t.TaskTypeId).Name
+                        }).ToList()
+                    }
+
+                });
+            }
+            else if (sprint == null)
+            {
+                return NotFound();
+            }
+            return Conflict();
             //var data = from sp in _context.Sprints
             //           join tsk in _context.Tasks on sp.SprintId equals tsk.SprintId
             //           where sp.SprintId == id
             //           select new { sp, tsk };
 
-            var sprint = _context.Sprints.FirstOrDefault(t => t.SprintId == id);
+            /*var sprint = _context.Sprints.FirstOrDefault(t => t.SprintId == id);
             var tasks = sprint.Tasks;
 
             if (sprint != null)
@@ -80,7 +121,7 @@ namespace PlannerApi.Controllers.Planner
                 };
                 return Ok(pageOfTasks);
             }
-            return NotFound();
+            return NotFound();*/
         }
         #endregion
 
@@ -365,7 +406,7 @@ namespace PlannerApi.Controllers.Planner
                 existingTask.AssigneeId = model.AssigneedId;
             }
 
-            if (!string.IsNullOrEmpty(model.EstimatedTime))
+            if (model.EstimatedTime != null)
             {
                 existingTask.EstimatedTime = model.EstimatedTime;
             }

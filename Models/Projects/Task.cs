@@ -9,7 +9,7 @@ namespace PlannerApi.Models.Projects
         public int TaskId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string EstimatedTime { get; set; }
+        public int? EstimatedTime { get; set; }
 
         public int TaskPriorityId { get; set; }
         public TaskPriority TaskPriority { get; set; }
