@@ -11,11 +11,11 @@ namespace PlannerApi.Models.TaskModel
         public string Name { get; set; }
         public string Description { get; set; }
         public int? EstimatedTime { get; set; }
-        public int? TaskPriorityId { get; set; }
-        public int? TaskStatusId { get; set; }
+        public int? PriorityId { get; set; }
+        public int? StatusId { get; set; }
         public int? TaskTypeId { get; set; }
         public int? SprintId { get; set; }
-        public string AssigneedId { get; set; }
+        public string AssigneeId { get; set; }
 
     }
 }

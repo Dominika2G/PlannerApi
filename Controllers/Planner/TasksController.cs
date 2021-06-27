@@ -37,7 +37,7 @@ namespace PlannerApi.Controllers.Planner
 
         #region GetSprintWithTasks
         [HttpGet]
-       // [Authorize]
+        [Authorize]
         [Route("GetSprintWithTasks/{id}")]
         public ActionResult GetSprintWithTasks(int id)
         {
@@ -55,16 +55,16 @@ namespace PlannerApi.Controllers.Planner
                     {
                         HasNextPage = false,
                         HasPreviousPage = false,
-                        LastPageIndex = 1,
+                        LastPageIndex = 0,
                         MaxPageSize = int.MaxValue,
-                        PageIndex = 1,
+                        PageIndex = 0,
                         Pages = tasks.Select(t => new 
                         {
                             Id = t.TaskId,
                             Description = t.Description,
                             Name = t.Name,
                             SprintId = t.SprintId,
-                            EstimatedTime = 10,
+                            EstimatedTime = t.EstimatedTime == null ? 0 : t.EstimatedTime,
                             SprintName = sprint.Name,
                             PriorityName = _context.TaskPriorities.FirstOrDefault(x => x.TaskPriorityId == t.TaskPriorityId).Name,
                             ReporterName = _context.Users.FirstOrDefault(u => u.Id == t.ReporterId).UserName,
@@ -127,47 +127,19 @@ namespace PlannerApi.Controllers.Planner
 
         #region GetComments
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize]
-        [Route("GetComments")]
-        public ActionResult GetComments([FromHeader] int id)
+        [Route("GetComments/{id}")]
+        public ActionResult GetComments(int id)
         {
-            var task = _context.Tasks.FirstOrDefault(t => t.TaskId == id);
-            var comments = _context.Tasks.Where(t => t.TaskId == id).Select(l => l.CommentsList).ToArray();
-            if (comments.Count() > 0)
+            var result = _context.Comments.Where(t => t.TaskId == id).Select(c => new
             {
-                var result = task.CommentsList.Select(c => new
-                {
-                    Author = _context.Users.Where(u => u.Id == c.AuthorId).Select(p => p.UserName).FirstOrDefault(),
-                    Content = c.Content,
-                    CreationTime = c.StartDate
-                }).ToArray();
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                return NotFound();
-            }
-            /*var result = task.CommentsList.Select(c => new
-            {
-                Author = _context.Users.Where(u => u.Id == c.AuthorId).Select(p => p.UserName).FirstOrDefault(),
+                Author = _context.Users.First(u => u.Id == c.AuthorId).UserName,
                 Content = c.Content,
                 CreationTime = c.StartDate
-            }).ToArray();*/
+            }).ToArray();
 
-            /*if(result != null)
-            {
-                return Ok(result);
-            }*/
-
-            return NotFound();
-
-            /*return Ok(task.CommentsList.Select(c => new
-            {
-                Author = _context.Users.Where(u => u.Id == c.AuthorId).Select(p => p.UserName ).FirstOrDefault(),
-                Content = c.Content,
-                CreationTime = c.StartDate
-            }).ToArray());*/
+            return Ok(result);
         }
 
         #endregion GetComments
@@ -211,7 +183,7 @@ namespace PlannerApi.Controllers.Planner
 
             var result = _context.Tasks.Where(x => x.AssigneeId == userId).Select(t => new
             {
-                t.TaskId,
+                Id = t.TaskId,
                 t.Name,
                 t.Description,
                 AssignedName = t.Assignee.UserName,
@@ -248,25 +220,25 @@ namespace PlannerApi.Controllers.Planner
 
         #region GetTaskDetails
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize]
-        [Route("GetTaskDetails")]
-        public ActionResult GetTaskDetails([FromHeader] int id)
+        [Route("GetTaskDetails/{id}")]
+        public ActionResult GetTaskDetails(int id)
         {
-            //var id = 1;
             var result = _context.Tasks.Where(x => x.TaskId == id).Select(t => new
             {
-                t.TaskId,
+                Id = t.TaskId,
                 t.Name,
                 t.Description,
-                AssignedName = t.Reporter.UserName,
+                AssigneeName = t.Assignee.UserName,
+                ReporterName = t.Reporter.UserName,
                 t.SprintId,
                 SprintName = t.Sprint.Name,
                 TypeName = t.TaskType.Name,
                 StatusName = t.TaskStatus.TaskName,
                 PriorityName = t.TaskPriority.Name,
                 t.EstimatedTime
-            }).ToArray();
+            }).SingleOrDefault();
 
             if (result != null)
             {
@@ -292,65 +264,79 @@ namespace PlannerApi.Controllers.Planner
 
         #region GetManagedTaskDetails
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Authorize]
-        [Route("GetManagedTaskDetails")]
-        public ActionResult GetManagedTaskDetails([FromHeader] int id)
+        [Route("GetManagedTaskDetails/{id}")]
+        public ActionResult GetManagedTaskDetails(int id)
         {
-            //var id = 3;
             var result = _context.Tasks.Where(x => x.TaskId == id).Select(t => new
             {
-                t.TaskId,
+                Id = t.TaskId,
                 t.Name,
                 t.Description,
-                AssignedId = t.Reporter.Id,
+                AssigneeId = t.Reporter.Id,
                 t.SprintId,
                 t.TaskTypeId,
-                t.TaskStatusId,
-                t.TaskPriorityId,
+                StatusId = t.TaskStatusId,
+                PriorityId = t.TaskPriorityId,
                 t.EstimatedTime
-            }).ToArray();
+            }).SingleOrDefault();
 
             if (result != null)
             {
                 return Ok(result);
             }
-
-            return NotFound();
-            /*return Ok(_context.Tasks.Where(x => x.TaskId == id).Select(t => new {
-                t.TaskId,
-                t.Name,
-                t.Description,
-                AssignedId = t.Reporter.Id,
-                t.SprintId,
-                t.TaskTypeId,
-                t.TaskStatusId,
-                t.TaskPriorityId,
-                t.EstimatedTime
-            }).ToArray());*/
+            else
+            {
+                return NotFound();
+            }
         }
 
         #endregion GetManagedTaskDetails
 
         #region GetNewTaskManagementOptions
-
-        [HttpGet("{projectId}")]
+        [HttpGet]
         [Authorize]
-        [Route("GetNewTaskManagementOptions")]
-        public ActionResult GetNewTaskManagementOptions([FromHeader] int projectId)
+        [Route("GetNewTaskManagementOptions/{projectId}")]
+        public ActionResult GetNewTaskManagementOptions(int projectId)
         {
             DateTime thisDay = DateTime.Today;
 
             return Ok(new
             {
-                PermittedStatuses = _context.TaskStatuses.Select(s => new { s.TaskStatusId, s.TaskName }).ToArray(),
-                PermittedTaskTypes = _context.TaskTypes.Select(t => new { t.TaskTypeId, t.Name }).ToArray(),
-                PermittedTaskPriorities = _context.TaskPriorities.Select(p => new { p.TaskPriorityId, p.Name }).ToArray(),
-                PermittedAssignableSprints = _context.Sprints.Where(x => x.EndDate.CompareTo(thisDay) > 0).Select(s => new { s.SprintId, s.Name }).ToArray(),
-                PermittedAssignees = _context.Projects.Where(p => p.Id == projectId).Select(p => p.ProjectsUsers.Select(u => new { u.UserId, u.User.UserName }).ToArray()).ToArray()
+                PermittedStatuses = _context.TaskStatuses.Select(s => new { Id = s.TaskStatusId, StatusName = s.TaskName }).ToArray(),
+                PermittedTaskTypes = _context.TaskTypes.Select(t => new { Id = t.TaskTypeId, TypeName = t.Name }).ToArray(),
+                PermittedTaskPriorities = _context.TaskPriorities.Select(p => new { Id = p.TaskPriorityId, PriorityName = p.Name }).ToArray(),
+                PermittedAssignableSprints = _context.Sprints.Where(x => x.EndDate.CompareTo(thisDay) > 0 && x.ProjectId == projectId).Select(s => new { Id = s.SprintId, s.Name }).ToArray(),
+                PermittedAssignees = _context.ProjectsUsers.Where(x => x.ProjectId == projectId)
+                                                           .Select(u => new { Id = u.UserId, Name = u.User.UserName })
+                                                           .ToArray()
             });
         }
+        #endregion GetNewTaskManagementOptions
 
+        #region GetNewTaskManagementOptions
+        [HttpGet]
+        [Authorize]
+        [Route("GetTaskManagementOptions/{taskId}")]
+        public ActionResult GetTaskManagementOptions(int taskId)
+        {
+            DateTime thisDay = DateTime.Today;
+            var sprintIdOfTask = _context.Tasks.First(x => x.TaskId == taskId).SprintId;
+            var projectIdOfTask = _context.Sprints.First(x => x.SprintId == sprintIdOfTask).ProjectId;
+
+            var data = new
+            {
+                PermittedStatuses = _context.TaskStatuses.Select(s => new { Id = s.TaskStatusId, StatusName = s.TaskName }).ToArray(),
+                PermittedTaskTypes = _context.TaskTypes.Select(t => new { Id = t.TaskTypeId, TypeName = t.Name }).ToArray(),
+                PermittedTaskPriorities = _context.TaskPriorities.Select(p => new { Id = p.TaskPriorityId, PriorityName = p.Name }).ToArray(),
+                PermittedAssignableSprints = _context.Sprints.Where(x => x.EndDate.CompareTo(thisDay) > 0 && x.ProjectId == projectIdOfTask).Select(s => new { Id = s.SprintId, s.Name }).ToArray(),
+                PermittedAssignees = _context.ProjectsUsers.Where(x => x.ProjectId == projectIdOfTask)
+                                                           .Select(u => new { Id = u.UserId, Name = u.User.UserName })
+                                                           .ToArray()
+            };
+            return Ok(data);
+        }
         #endregion GetNewTaskManagementOptions
 
         #region CreateTask
@@ -363,12 +349,13 @@ namespace PlannerApi.Controllers.Planner
             {
                 Name = model.Name,
                 Description = model.Description,
-                AssigneeId = model.AssigneedId,
+                AssigneeId = model.AssigneeId,
                 SprintId = model.SprintId,
-                TaskStatusId = (int)model.TaskStatusId,
+                TaskStatusId = (int)model.StatusId,
                 TaskTypeId = (int)model.TaskTypeId,
-                TaskPriorityId = (int)model.TaskPriorityId,
-                EstimatedTime = model.EstimatedTime
+                TaskPriorityId = (int)model.PriorityId,
+                EstimatedTime = model.EstimatedTime,
+                ReporterId = User.Claims.First(c => c.Type == "UserID").Value
             };
 
             await _context.Tasks.AddAsync(task);
@@ -401,9 +388,9 @@ namespace PlannerApi.Controllers.Planner
                 existingTask.Description = model.Description;
             }
 
-            if (!string.IsNullOrEmpty(model.AssigneedId))
+            if (!string.IsNullOrEmpty(model.AssigneeId))
             {
-                existingTask.AssigneeId = model.AssigneedId;
+                existingTask.AssigneeId = model.AssigneeId;
             }
 
             if (model.EstimatedTime != null)
@@ -411,14 +398,14 @@ namespace PlannerApi.Controllers.Planner
                 existingTask.EstimatedTime = model.EstimatedTime;
             }
 
-            if(model.TaskPriorityId != null)
+            if(model.PriorityId != null)
             {
-                existingTask.TaskPriorityId = (int)model.TaskPriorityId;
+                existingTask.TaskPriorityId = (int)model.PriorityId;
             }
 
-            if(model.TaskStatusId != null)
+            if(model.StatusId != null)
             {
-                existingTask.TaskStatusId = (int)model.TaskStatusId;
+                existingTask.TaskStatusId = (int)model.StatusId;
             }
 
             if(model.TaskTypeId != null)
@@ -431,7 +418,7 @@ namespace PlannerApi.Controllers.Planner
                 existingTask.SprintId = (int)model.SprintId;
             }
 
-            _context.Tasks.Update(existingTask);
+            //_context.Tasks.Update(existingTask);
             _context.SaveChanges();
 
             return Ok();
@@ -445,7 +432,7 @@ namespace PlannerApi.Controllers.Planner
         public async Task<ActionResult> AddComment(CommentModel model)
         {
             string userId = User.Claims.First(c => c.Type == "UserID").Value;
-            var date = DateTime.Today;
+            var date = DateTime.Now;
             var comments = new Comments
             {
                 AuthorId = userId,
